@@ -35,10 +35,10 @@ class RF():
         return packet
 
     def arm(self):
-        self._comport.write(bytes('arm\n'))
+        self._comport.write(bytes('arm\n', 'utf8'))
 
     def abort(self):
-        self._comport.write(bytes('abort\n'))
+        self._comport.write(bytes('abort\n', 'utf8'))
 
     def is_open(self):
         return self._comport.isOpen()
