@@ -12,4 +12,4 @@ class DataPacket():
         self.dx = dx
         self.yaw = yaw
         self.current_u = current_u
-        self.servo_u
+        self.servo_u = servo_u
