@@ -7,15 +7,28 @@ class RF():
     def __init__(self, port):
         self._comport = serial.Serial(port, 115200)
         self._bytes_received = []
-        self._DEADBEEF =  [239, 190, 173, 222] #4 byte heaeder to indicate telem frame
-        self._BABAFACE = [206, 250, 186, 186] #4 byte header to indicate string data 
+        self._TELEM_HEADER =  [239, 190, 173, 222] #4 byte heaeder to indicate telem frame, 0xDEADBEEF
+        self._STRING_HEADER = [206, 250, 186, 186] #4 byte header to indicate string data, 0xBABAFACE
         self._FOOTER = 3405707998 #4 byte uint to indicate ending of string or telem frame
         self._telem_struct = '=IhL4d4l26d19d20dI'
         self._sizeofstruct = calcsize(self._telem_struct)
-        self._backlog_bytes_num = 600_000
+        self._backlog_bytes_num = 600_000 #how many bytes to be in list for a backlog
 
     def close(self):
         self._comport.close()
+
+    def handle_telem_received(self, telem_frame):
+        print(telem_frame)
+
+    def handle_string_received(self, str):
+        print(str)
+
+    def handle_telem_error(self, error_msg, frame):
+        print(error_msg)
+        print(frame)
+
+    def handle_alignment_notice(self, bytes_skipped):
+        print(str(bytes_skipped) + " required to align")
 
     #Should be called with high frequency to ensure propper readings
     def read_binary(self):
@@ -26,38 +39,35 @@ class RF():
             
             if(len(self._bytes_received) > self._backlog_bytes_num):
                 #Backlog condition
-                bytes_received = []
+                self._bytes_received.clear()
 
             if(len(self._bytes_received) < 4):
                 return
-            if(self._bytes_received[0:4] != self._DEADBEEF and self._bytes_received[0:4] != self._BABAFACE): #if the first four bytes received do not match the struct magic number, then alignment must be done
+            if(self._bytes_received[0:4] != self._TELEM_HEADER and self._bytes_received[0:4] != self._STRING_HEADER): #if the first four bytes received do not match the struct magic number, then alignment must be done
                 print(self._bytes_received)
                 
                 iterations = 0
-                while(len(self._bytes_received) >=4 and (self._bytes_received[0:4] != self._DEADBEEF and self._bytes_received[0:4] != self._BABAFACE)): #removes from the front of the struct until a head is found
+                while(len(self._bytes_received) >=4 and (self._bytes_received[0:4] != self._TELEM_HEADER and self._bytes_received[0:4] != self._STRING_HEADER)): #removes from the front of the struct until a head is found
                     self._bytes_received.pop(0)
                     iterations += 1
-                print("took " + str(iterations) + " to align")
+                self.handle_alignment_notice(iterations)
 
             if(len(self._bytes_received) < 4):
                 return
 
-            if((self._bytes_received[0:4] == self._DEADBEEF and len(self._bytes_received) >= self._sizeofstruct)): #When there is a valid header and enough bytes are in the list, data is then read.
+            if((self._bytes_received[0:4] == self._TELEM_HEADER and len(self._bytes_received) >= self._sizeofstruct)): #When there is a valid header and enough bytes are in the list, data is then read.
                 res = bytearray(self._bytes_received[0:self._sizeofstruct])
                 del self._bytes_received[0:self._sizeofstruct]
                 frame = unpack(self._telem_struct, res)
                 
                 
                 if(frame[-1:][0] != self._FOOTER):
-                    print("Invalid Frame")
-                    print(frame)
-                    print()
+                    self.handle_telem_error("invalid frame", frame)
                 else:
-                    print(frame) #handle frames here
-                    print()
+                    self.handle_telem_received(frame)
                     
 
-            if(self._bytes_received[0:4] == self._BABAFACE and len(self._bytes_received) >= 5):
+            if(self._bytes_received[0:4] == self._STRING_HEADER and len(self._bytes_received) >= 5):
                 byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is size
                 length = unpack('=B', byte_after_header)[0]
 
@@ -68,17 +78,14 @@ class RF():
                     parsedString = unpack(string_with_struct, incomingString)
                     
                     if(parsedString[-1:][0] != self._FOOTER):
-                        print("Invalid String, no footer")
-                        print(parsedString)
-                        print()
+                        self.handle_string_error("Invalid String, no footer", parsedString)
                     else:
                         try:
                             byte_chars = [s.decode() for s in parsedString[:-1]]
                             output_string = "".join(byte_chars)
-                            print(output_string)
-                            print()
+                            self.handle_string_received(output_string)
                         except:
-                            print("invalid string value exceeds ascii range")
+                            self.handle_string_error("Character value exceeds ascii values", parsedString)
 
     def read(self):
         line = self._comport.readline()
