@@ -12,6 +12,7 @@ class RF():
         self._FOOTER = 3405707998 #4 byte uint to indicate ending of string or telem frame
         self._telem_struct = '=IhL4d4l26d19d20dI'
         self._sizeofstruct = calcsize(self._telem_struct)
+        self._backlog_bytes_num = 600_000
 
     def close(self):
         self._comport.close()
@@ -23,6 +24,10 @@ class RF():
             received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
             self._bytes_received.extend(list(received)) #adds recieved data to a list
             
+            if(len(self._bytes_received) > self._backlog_bytes_num):
+                #Backlog condition
+                bytes_received = []
+
             if(len(self._bytes_received) < 4):
                 return
             if(self._bytes_received[0:4] != self._DEADBEEF and self._bytes_received[0:4] != self._BABAFACE): #if the first four bytes received do not match the struct magic number, then alignment must be done
@@ -37,13 +42,13 @@ class RF():
             if(len(self._bytes_received) < 4):
                 return
 
-            if((self._bytes_received[0:4] == self._DEADBEEF and len(self._bytes_received) >= sizeofstruct)): #When there is a valid header and enough bytes are in the list, data is then read.
+            if((self._bytes_received[0:4] == self._DEADBEEF and len(self._bytes_received) >= self._sizeofstruct)): #When there is a valid header and enough bytes are in the list, data is then read.
                 res = bytearray(self._bytes_received[0:self._sizeofstruct])
                 del self._bytes_received[0:self._sizeofstruct]
                 frame = unpack(self._telem_struct, res)
                 
                 
-                if(frame[-1:][0] != FOOTER):
+                if(frame[-1:][0] != self._FOOTER):
                     print("Invalid Frame")
                     print(frame)
                     print()
