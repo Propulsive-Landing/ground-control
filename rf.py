@@ -9,7 +9,7 @@ class RF():
         self._bytes_received = []
         self._TELEM_HEADER =  [239, 190, 173, 222] #4 byte heaeder to indicate telem frame, 0xDEADBEEF
         self._STRING_HEADER = [206, 250, 186, 186] #4 byte header to indicate string data, 0xBABAFACE
-        self._FOOTER = 3405707998 #4 byte uint to indicate ending of string or telem frame
+        self._FOOTER = 3405707998 #4 byte uint32_t to indicate ending of string or telem frame
         self._telem_struct = '=IhL4d4l26d19d20dI'
         self._sizeofstruct = calcsize(self._telem_struct)
         self._backlog_bytes_num = 600_000 #how many bytes to be in list for a backlog
