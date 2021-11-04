@@ -3,22 +3,26 @@ import serial
 from struct import *
 
 
+
 class RF():
-    def __init__(self, port):
-        self._comport = serial.Serial(port, 115200)
-        self._bytes_received = []
+    def __init__(self, port, baud, frame_handler, backlog_threshold = 600_000):
+        self._comport = serial.Serial(port, baud)
+        self._backlog_bytes_num = backlog_threshold #how many bytes to be in list for a backlog
+        self._handle_frame = frame_handler #The function that is called when a telem_frame is received
+
+        self._bytes_received = [] #This list holds recieved bytes and this list is searched through to find packets
         self._TELEM_HEADER =  [239, 190, 173, 222] #4 byte heaeder to indicate telem frame, 0xDEADBEEF
         self._STRING_HEADER = [206, 250, 186, 186] #4 byte header to indicate string data, 0xBABAFACE
         self._FOOTER = 3405707998 #4 byte uint32_t to indicate ending of string or telem frame
+
         self._telem_struct = '=IhL4d4l26d19d20dI'
         self._sizeofstruct = calcsize(self._telem_struct)
-        self._backlog_bytes_num = 600_000 #how many bytes to be in list for a backlog
 
     def close(self):
         self._comport.close()
 
-    def handle_telem_received(self, telem_frame):
-        print(telem_frame)
+    def telem_received(self, telem_frame):
+        self._handle_frame(telem_frame)
 
     def handle_string_received(self, str):
         print(str)
@@ -40,6 +44,7 @@ class RF():
             if(len(self._bytes_received) > self._backlog_bytes_num):
                 #Backlog condition
                 self._bytes_received.clear()
+                print("backlog")
 
             if(len(self._bytes_received) < 4):
                 return
@@ -64,7 +69,7 @@ class RF():
                 if(frame[-1:][0] != self._FOOTER):
                     self.handle_telem_error("invalid frame", frame)
                 else:
-                    self.handle_telem_received(frame)
+                    self.telem_received(frame)
                     
 
             if(self._bytes_received[0:4] == self._STRING_HEADER and len(self._bytes_received) >= 5):
