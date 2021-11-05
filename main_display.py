@@ -5,12 +5,9 @@ from matplotlib import style
 style.use('fivethirtyeight')
 
 fig = plt.figure()
-ax1 = fig.add_subplot(2,2,1)            #Find how to work the label
+ax1 = fig.add_subplot(2,2,1)            
 ax2 = fig.add_subplot(2,2,2)
 ax3 = fig.add_subplot(2,2,3)                                              
-
-ax1.set_xlabel('time')                                      #Won't produce
-ax2.set_xlabel('x-axis')
 
 def animate(i):
     graph_data = open('example.txt','r').read()
@@ -42,6 +39,8 @@ def animate(i):
     ax1.plot(t1s, x1s)
     ax1.plot(t1s, y1s)
     ax1.plot(t1s, z1s)
+    ax1.set_xlabel('Time')
+    ax1.set_ylabel('Euler')
 
 def animate2(i):
     graph_data = open('example2.txt','r').read()
@@ -73,6 +72,8 @@ def animate2(i):
     ax2.plot(t2s, x2s)
     ax2.plot(t2s, y2s)
     ax2.plot(t2s, z2s)
+    ax2.set_xlabel('Time')
+    ax2.set_ylabel('Y-Axis')
 
 def animate3(i):
     graph_data = open('example3.txt','r').read()
@@ -104,6 +105,8 @@ def animate3(i):
     ax3.plot(t3s, x3s)
     ax3.plot(t3s, y3s)
     ax3.plot(t3s, z3s)
+    ax3.set_xlabel('Time')
+    ax3.set_ylabel('Y-Axis')
 
 ani = animation.FuncAnimation(fig, animate, interval=1000)
 ani2 = animation.FuncAnimation(fig, animate2, interval=1000)
