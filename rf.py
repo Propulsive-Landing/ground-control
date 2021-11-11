@@ -5,7 +5,7 @@ from struct import *
 
 
 class RF():
-    def __init__(self, port, baud, frame_handler, backlog_threshold = 600_000):
+    def __init__(self, port, baud, frame_handler, backlog_threshold = 600_000, telem_string='=IhL4d4l26d19d20dI'):
         self._comport = serial.Serial(port, baud)
         self._backlog_bytes_num = backlog_threshold #how many bytes to be in list for a backlog
         self._handle_frame = frame_handler #The function that is called when a telem_frame is received
@@ -15,8 +15,10 @@ class RF():
         self._STRING_HEADER = [206, 250, 186, 186] #4 byte header to indicate string data, 0xBABAFACE
         self._FOOTER = 3405707998 #4 byte uint32_t to indicate ending of string or telem frame
 
-        self._telem_struct = '=IhL4d4l26d19d20dI'
+        self._telem_struct = telem_string
         self._sizeofstruct = calcsize(self._telem_struct)
+
+        self._comport.reset_input_buffer()
 
     def close(self):
         self._comport.close()
