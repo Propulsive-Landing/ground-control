@@ -1,6 +1,5 @@
 from rf import RF
 from matplotlib import pyplot as plt
-import asyncio
 
 def main():
     file = open("run.csv", "w")
@@ -12,7 +11,7 @@ def main():
     xArr = []
     global yArr
     yArr = []
-    
+
     def handler(frame):
         for x in frame:
             file.write(str(x) + ", ")
