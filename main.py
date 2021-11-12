@@ -8,10 +8,11 @@ def main():
     plt.ion()
     plt.show()
 
-    lock = asyncio.Lock()
-
+    global xArr
     xArr = []
+    global yArr
     yArr = []
+    
     def handler(frame):
         for x in frame:
             file.write(str(x) + ", ")
@@ -21,25 +22,23 @@ def main():
         xArr.append(frame[3])
         yArr.append(frame[46])
 
-    async def plot():
-        await lock.acquire()
+    def plot():
+        global xArr
+        global yArr
+        if(len(xArr) > 10):
+            xArr = xArr[-20:]
+            yArr = yArr[-20:]
+            plt.clf()
+            plt.plot(xArr, yArr)
+            plt.draw()
+            plt.pause(0.001)
 
-        try:
-            if(len(xArr) > 10):
-                xArr = xArr[-20:]
-                yArr = yArr[-20:]
-                plt.clf()
-                plt.plot(xArr, yArr)
-                plt.draw()
-                plt.pause(0.001)
-        finally:
-            lock.release()
 
     rf = RF('COM3', 115200, handler, telem_string='=IhL4f4l26f19f20fI', backlog_threshold=6000)
     
     while(True):
         #plotting
-        asyncio.ensure_future(plot())
+        plot()
 
 
         #reading
@@ -47,4 +46,4 @@ def main():
     
 
 if __name__ == "__main__":
-   asyncio.run(main())
+   main()
