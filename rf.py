@@ -1,14 +1,48 @@
+from multiprocessing import Pool
 from data_packet import *
 import serial
+import tkinter as tk
 from struct import *
+import msvcrt
 
+def _rf_init(file_path):
+    global xArr
+    global yArr
+    xArr = []
+    yArr = []
+    global plt
+    import matplotlib.pyplot as plt
+    plt.axis([0, 10, 0, 10])
+    plt.ion()
+    plt.show()
+    global file 
+    file = open(file_path, 'w')
 
+def _rf_handle(frame):
+    global xArr
+    global yArr
+    global file
+
+    xArr.append(frame[3])
+    yArr.append(frame[46])
+
+    xArr = xArr[-20:]
+    yArr = yArr[-20:]
+    plt.clf()
+    plt.plot(xArr, yArr)
+    plt.draw()
+    plt.pause(0.001)
+
+    file.write("GOOD " + str(xArr[-1]) + "\n")
+
+def _save_and_exit():
+    global file
+    file.close()
 
 class RF():
-    def __init__(self, port, baud, frame_handler, backlog_threshold = 600_000, telem_string='=IhL4d4l26d19d20dI'):
+    def __init__(self, port, baud, backlog_threshold = 600_000, telem_string='=IhL4d4l26d19d20dI'):
         self._comport = serial.Serial(port, baud)
         self._backlog_bytes_num = backlog_threshold #how many bytes to be in list for a backlog
-        self._handle_frame = frame_handler #The function that is called when a telem_frame is received
 
         self._bytes_received = [] #This list holds recieved bytes and this list is searched through to find packets
         self._TELEM_HEADER =  [239, 190, 173, 222] #4 byte heaeder to indicate telem frame, 0xDEADBEEF
@@ -23,9 +57,6 @@ class RF():
     def close(self):
         self._comport.close()
 
-    def telem_received(self, telem_frame):
-        self._handle_frame(telem_frame)
-
     def handle_string_received(self, str):
         print(str)
 
@@ -36,8 +67,30 @@ class RF():
     def handle_alignment_notice(self, bytes_skipped):
         print(str(bytes_skipped) + " required to align")
 
+
+    def loop_for_data(self, window):
+        with Pool(processes=1, initializer=_rf_init, initargs=("epic.txt",)) as telem_frame_pool:
+            global exit_condition
+            exit_condition = False
+
+            def set_exit():
+                global exit_condition
+                exit_condition = True
+
+            exit_button = tk.Button(window, text="Save and Exit", command=(set_exit))
+            exit_button.pack()
+
+            while(True):
+                if(exit_condition):  
+                    telem_frame_pool.apply(_save_and_exit)
+                    telem_frame_pool.close()
+                    break
+
+                self.read_binary(telem_frame_pool)
+                window.update()
+
     #Should be called with high frequency to ensure propper readings
-    def read_binary(self):
+    def read_binary(self, telem_frame_pool):
         if(self._comport.in_waiting >= 5): #waits until there is data of at least the size of the struct because if there is not that much data, there cannot be a complete struct
             
             received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
@@ -71,7 +124,8 @@ class RF():
                 if(frame[-1:][0] != self._FOOTER):
                     self.handle_telem_error("invalid frame", frame)
                 else:
-                    self.telem_received(frame)
+#================================================PROCESSING FRAMES===================================================================#
+                    telem_frame_pool.apply(_rf_handle, args=(frame,))
                     
 
             if(self._bytes_received[0:4] == self._STRING_HEADER and len(self._bytes_received) >= 5):
