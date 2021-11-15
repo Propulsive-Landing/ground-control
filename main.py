@@ -1,8 +1,43 @@
 from rf import RF
 import tkinter as tk
-
+from multiprocessing import Process
 import os
 from pathlib import Path
+
+def telem_frame_handler(queue, path):
+    print("start")
+
+    import matplotlib.pyplot as plt
+    plt.axis([0, 10, 0, 10])
+    plt.ion()
+    plt.show()
+    file = open(path, 'w')
+
+    xArr = []
+    yArr = []
+
+    while(True):
+        message = queue.get()
+        if(message == 'STOP'):
+           break
+
+        xArr.append(message[3])
+        yArr.append(message[46])
+        xArr = xArr[-20:]
+        yArr = yArr[-20:]
+
+        plt.clf()
+        plt.plot(xArr, yArr)
+        plt.draw()
+        plt.pause(0.001)
+
+        for x in message:
+           file.write(str(x) + ",")
+        file.write('\n')
+
+    file.close()
+    print("END")
+
 
 def main():
     #======Get struct string=====#
@@ -11,7 +46,6 @@ def main():
 
     structure_string_path = os.path.join(script_path, structure_string_path)
     
-    struct_string = '=IhL4f4l26f19f20fI'
     try:
         struct_string = open(structure_string_path).readline()
     except FileNotFoundError:
@@ -36,11 +70,28 @@ def main():
         window.update()
 
     
-    print(struct_string)
-    rf = RF('COM3', 115200, telem_string=struct_string, backlog_threshold=6000)
+        
+    
+    rf = RF('COM3', 115200, telem_string=struct_string)
 
-    #add save_and_exit button, live plot. 
-    rf.loop_for_data(window)
+    telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue,'run1.csv'))
+    telem_process.start()
+
+
+    global listening
+    listening = True
+    def stop_listening():
+        rf.telem_frame_queue.put('STOP')
+        telem_process.join()
+        global listening
+        listening = False
+
+    stop_button = tk.Button(window, text="Save and Exit", command=stop_listening)
+    stop_button.pack()
+
+    while(listening):
+        rf.read_binary()
+        window.update()
     
 
 if __name__ == "__main__":
