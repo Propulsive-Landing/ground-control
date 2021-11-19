@@ -26,19 +26,20 @@ class RF():
 
 
         self.telem_frame_queue = Queue()
+        self.log_queue = Queue()
 
     def close(self):
         self._comport.close()
 
     def handle_string_received(self, str):
-        print(str)
+        self.log_queue.put(str)
 
     def handle_telem_error(self, error_msg, frame):
-        print(error_msg)
-        print(frame)
+        self.log_queue.put(error_msg)
+        self.log_queue.put(frame)
 
     def handle_alignment_notice(self, bytes_skipped):
-        print(str(bytes_skipped) + " required to align")
+        self.log_queue.put(str(bytes_skipped) + " required to align")
 
 
     #Should be called with high frequency to ensure propper readings
@@ -51,12 +52,12 @@ class RF():
             if(len(self._bytes_received) > self._backlog_bytes_num):
                 #Backlog condition
                 self._bytes_received.clear()
-                print("backlog")
+                self.log_queue.put("backlog")
 
             if(len(self._bytes_received) < 4):
                 return
             if(self._bytes_received[0:4] != self._TELEM_HEADER and self._bytes_received[0:4] != self._STRING_HEADER): #if the first four bytes received do not match the struct magic number, then alignment must be done
-                print(self._bytes_received)
+                self.log_queue.put(self._bytes_received)
                 
                 iterations = 0
                 while(len(self._bytes_received) >=4 and (self._bytes_received[0:4] != self._TELEM_HEADER and self._bytes_received[0:4] != self._STRING_HEADER)): #removes from the front of the struct until a head is found

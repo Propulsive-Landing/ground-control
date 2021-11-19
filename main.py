@@ -9,8 +9,20 @@ import os
 from pathlib import Path
 from shutil import copyfile
 
+def log_handler(queue, path):
+    print("Start log handling")
+
+    file = open(path, 'w')
+
+    while(True):
+        message = queue.get()
+        if(message == 'STOP'):
+           break
+        file.write(str(message))
+    file.close()
+
 def telem_frame_handler(queue, path):
-    print("start")
+    print("start frame handling")
 
     import matplotlib.pyplot as plt
     plt.axis([0, 10, 0, 10])
@@ -40,7 +52,7 @@ def telem_frame_handler(queue, path):
         file.write('\n')
 
     file.close()
-    print("END")
+    print("END Frame handling")
 
 
 def main():
@@ -112,12 +124,17 @@ def main():
     telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue, os.path.join(directory, Path('./data.csv'))))
     telem_process.start()
 
+    log_process = Process(target=log_handler, args=(rf.log_queue, os.path.join(directory, Path('./output.log'))))
+    log_process.start()
+
 
     global listening
     listening = True
     def stop_listening():
         rf.telem_frame_queue.put('STOP')
+        rf.log_queue.put('STOP')
         telem_process.join()
+        log_process.join()
         global listening
         listening = False
 
