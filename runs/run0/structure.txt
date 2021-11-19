@@ -20,13 +20,13 @@ double (8B),3,gyro_raw_0
 double (8B),3,gyro_raw_1
 double (8B),3,quaternion_dot
 double (8B),3,euler_dot
-double (8B),9,cbn
-double (8B),3,euler
-double (8B),4,quaternion
-double (8B),3,velocity
-double (8B),4,y
-double (8B),6,x
-double (8B),6,dx
+float (4B),9,cbn
+float (4B),3,euler
+float (4B),4,quaternion
+float (4B),3,velocity
+float (4B),4,y
+float (4B),6,x
+float (4B),6,dx
 double (8B),2,current_u
 double (8B),2,servo_u
 unsigned int (4B),1,footer

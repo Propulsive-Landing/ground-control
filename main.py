@@ -19,6 +19,7 @@ def log_handler(queue, path):
         message = queue.get()
         if(message == 'STOP'):
            break
+        print(message)
         file.write(str(message) + '\n')
     file.close()
     print("end log handling")
@@ -70,12 +71,12 @@ def main():
     except FileNotFoundError:
         print("ERR")
 
-    #======End Struct String Management==========#
-
     #======Check minimum core requirements=======#
     if(cpu_count() < 3):
         print(f'Only {cpu_count()} cores available while at least 3 are required')
 
+
+    #=========Initialize GUI=====================#
     window = tk.Tk()
     window.title("RF Communication")
     window.geometry("200x200")
@@ -102,6 +103,8 @@ def main():
     baud.grid(row=1, column=1)
 
 
+    #===============Directory/File Management Setup=========#
+
     global parent_directory
     parent_directory = script_path
     def select_directory():
@@ -115,8 +118,10 @@ def main():
     start_button.pack(side=tk.BOTTOM)
     while(not start_condition):
         window.update()
+    #============="Start Recording"==============#
 
 
+    #====================File management after start==============#
     directory = os.path.join(parent_directory, Path('./run0'))
     index = 1
     while(os.path.isdir(directory)):
@@ -129,6 +134,7 @@ def main():
     
     rf = RF(port_input.get(), baud_input.get(), telem_string=struct_string)
 
+    #==================Logging and Graphic Processes==================#
     telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue, os.path.join(directory, Path('./data.csv'))))
     telem_process.start()
 
@@ -136,6 +142,7 @@ def main():
     log_process.start()
 
 
+    #================Exit management=============================#
     global listening
     listening = True
     def stop_listening():
