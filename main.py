@@ -1,8 +1,13 @@
 from rf import RF
+
 import tkinter as tk
+from tkinter import filedialog
+
 from multiprocessing import Process
+
 import os
 from pathlib import Path
+from shutil import copyfile
 
 def telem_frame_handler(queue, path):
     print("start")
@@ -54,6 +59,7 @@ def main():
     window = tk.Tk()
     window.title("RF Communication")
     window.geometry("200x200")
+
     
     global start_condition
     start_condition = False
@@ -75,18 +81,35 @@ def main():
     baud = tk.Entry(options, width=8, textvariable=baud_input)
     baud.grid(row=1, column=1)
 
-    start_button = tk.Button(window, text="Start Recording", command=start_recording)
-    start_button.pack()
 
+    global parent_directory
+    parent_directory = script_path
+    def select_directory():
+        global parent_directory
+        parent_directory = Path(filedialog.askdirectory(title="Select Directory for Runs", initialdir=script_path))
+
+    runs_directory_select = tk.Button(window, text="Select Data Directory", command=select_directory)
+    runs_directory_select.pack()
+
+    start_button = tk.Button(window, text="Start Recording", command=start_recording)
+    start_button.pack(side=tk.BOTTOM)
     while(not start_condition):
         window.update()
 
+
+    directory = os.path.join(parent_directory, Path('./run0'))
+    index = 1
+    while(os.path.isdir(directory)):
+        directory = os.path.join(parent_directory, Path('./run' + str(index)))
+        index += 1
+
+    os.mkdir(directory)
     
-        
+    copyfile(os.path.join(script_path, Path('./structure_manager/data/structure.txt')), os.path.join(directory, Path('./structure.txt')))
     
     rf = RF(port_input.get(), baud_input.get(), telem_string=struct_string)
 
-    telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue,'run1.csv'))
+    telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue, os.path.join(directory, Path('./data.csv'))))
     telem_process.start()
 
 
