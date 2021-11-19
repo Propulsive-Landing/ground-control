@@ -23,11 +23,10 @@ def telem_frame_handler(queue, path):
 
         xArr.append(message[3])
         yArr.append(message[46])
-        xArr = xArr[-20:]
-        yArr = yArr[-20:]
 
+        
         plt.clf()
-        plt.plot(xArr, yArr)
+        plt.plot(xArr[-20:], yArr[-20:])
         plt.draw()
         plt.pause(0.001)
 
@@ -63,6 +62,19 @@ def main():
         global start_condition
         start_condition = True
 
+    options = tk.Frame(window)
+    options.pack()
+
+    tk.Label(options, text="Port: ").grid(row=0, column=0)
+    port_input = tk.StringVar()
+    port = tk.Entry(options, width=8, textvariable=port_input)
+    port.grid(row=1, column=0)
+
+    tk.Label(options, text="Baud rate: ").grid(row=0, column=1)
+    baud_input = tk.StringVar()
+    baud = tk.Entry(options, width=8, textvariable=baud_input)
+    baud.grid(row=1, column=1)
+
     start_button = tk.Button(window, text="Start Recording", command=start_recording)
     start_button.pack()
 
@@ -72,7 +84,7 @@ def main():
     
         
     
-    rf = RF('COM3', 115200, telem_string=struct_string)
+    rf = RF(port_input.get(), baud_input.get(), telem_string=struct_string)
 
     telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue,'run1.csv'))
     telem_process.start()
