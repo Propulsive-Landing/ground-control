@@ -30,6 +30,7 @@ def telem_frame_handler(queue, path):
     plt.axis([0, 10, 0, 10])
     plt.ion()
     plt.show()
+
     file = open(path, 'w')
 
     xArr = []
@@ -47,7 +48,7 @@ def telem_frame_handler(queue, path):
         plt.clf()
         plt.plot(xArr[-20:], yArr[-20:])
         plt.draw()
-        plt.pause(0.001)
+        plt.pause(0.00001)
 
         for x in message:
            file.write(str(x) + ",")
