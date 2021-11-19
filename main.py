@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import filedialog
 
 from multiprocessing import Process
+from multiprocessing import cpu_count
 
 import os
 from pathlib import Path
@@ -18,8 +19,9 @@ def log_handler(queue, path):
         message = queue.get()
         if(message == 'STOP'):
            break
-        file.write(str(message))
+        file.write(str(message) + '\n')
     file.close()
+    print("end log handling")
 
 def telem_frame_handler(queue, path):
     print("start frame handling")
@@ -39,7 +41,7 @@ def telem_frame_handler(queue, path):
            break
 
         xArr.append(message[3])
-        yArr.append(message[46])
+        yArr.append((message[46]))
 
         
         plt.clf()
@@ -56,7 +58,7 @@ def telem_frame_handler(queue, path):
 
 
 def main():
-    #======Get struct string=====#
+    #============Get struct string===============#
     script_path = Path(os.path.realpath(__file__)).parent
     structure_string_path = Path("./structure_manager/data/struct_string.txt")
 
@@ -66,7 +68,12 @@ def main():
         struct_string = open(structure_string_path).readline()
     except FileNotFoundError:
         print("ERR")
-    
+
+    #======End Struct String Management==========#
+
+    #======Check minimum core requirements=======#
+    if(cpu_count() < 3):
+        print(f'Only {cpu_count()} cores available while at least 3 are required')
 
     window = tk.Tk()
     window.title("RF Communication")
