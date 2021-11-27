@@ -34,6 +34,9 @@ class RF():
     def handle_string_received(self, str):
         self.log_queue.put(str)
 
+    def handle_string_error(self, str):
+        self.log_queue.put(str)
+
     def handle_telem_error(self, error_msg, frame):
         self.log_queue.put(error_msg)
         self.log_queue.put(frame)
@@ -48,13 +51,15 @@ class RF():
             
             received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
             self._bytes_received.extend(list(received)) #adds recieved data to a list
+
+            #(self._bytes_received)
             
             if(len(self._bytes_received) > self._backlog_bytes_num):
                 #Backlog condition
                 self._bytes_received.clear()
                 self.log_queue.put("backlog")
 
-            if(len(self._bytes_received) < 4):
+            if(len(self._bytes_received) < 10):
                 return
             if(self._bytes_received[0:4] != self._TELEM_HEADER and self._bytes_received[0:4] != self._STRING_HEADER): #if the first four bytes received do not match the struct magic number, then alignment must be done
                 self.log_queue.put(self._bytes_received)
@@ -84,21 +89,21 @@ class RF():
                 byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is size
                 length = unpack('=B', byte_after_header)[0]
 
-                if(len(self._bytes_received[5:]) >= length + 4):
+                if(len(self._bytes_received[5:]) >= length + 5):
                     incomingString = bytearray(self._bytes_received[5:5+length+4]) #length of footer is 4
                     del self._bytes_received[0:5+length+4]
                     string_with_struct = '=' + str(length) + 'cI'
                     parsedString = unpack(string_with_struct, incomingString)
                     
                     if(parsedString[-1:][0] != self._FOOTER):
-                        self.handle_string_error("Invalid String, no footer", parsedString)
+                        self.handle_string_error("Invalid String, no footer" + str(parsedString))
                     else:
                         try:
                             byte_chars = [s.decode() for s in parsedString[:-1]]
                             output_string = "".join(byte_chars)
                             self.handle_string_received(output_string)
                         except:
-                            self.handle_string_error("Character value exceeds ascii values", parsedString)
+                            self.handle_string_error("Character value exceeds ascii values" + str(parsedString))
 
 
     def arm(self):

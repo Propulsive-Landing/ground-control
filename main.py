@@ -3,8 +3,7 @@ from rf import RF
 import tkinter as tk
 from tkinter import filedialog
 
-from multiprocessing import Process
-from multiprocessing import cpu_count
+from multiprocessing import Process, cpu_count
 
 import os
 from pathlib import Path
@@ -19,8 +18,8 @@ def log_handler(queue, path):
         message = queue.get()
         if(message == 'STOP'):
            break
-        print(message)
         file.write(str(message) + '\n')
+        print(message)
     file.close()
     print("end log handling")
 
@@ -30,7 +29,7 @@ def telem_frame_handler(queue, path):
     import matplotlib.pyplot as plt
     plt.axis([0, 10, 0, 10])
     plt.ion()
-    plt.show()
+    #plt.show()
 
     file = open(path, 'w')
 
@@ -42,14 +41,13 @@ def telem_frame_handler(queue, path):
         if(message == 'STOP'):
            break
 
-        xArr.append(message[3])
-        yArr.append((message[46]))
-
+        # xArr.append(message[3])
+        # yArr.append((message[11]))
         
-        plt.clf()
-        plt.plot(xArr[-20:], yArr[-20:])
-        plt.draw()
-        plt.pause(0.00001)
+        # plt.clf()
+        # plt.plot(xArr[-20:], yArr[-20:])
+        # plt.draw()
+        # plt.pause(0.00001)
 
         for x in message:
            file.write(str(x) + ",")
