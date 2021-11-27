@@ -12,7 +12,7 @@ def main():
     #=============================Setup Window and scrollbar============================#
     window = tk.Tk()
     window.title("Data Viewer")
-    window.geometry("200x200")
+    window.geometry("500x300")
 
     frame = tk.Frame(window)
     frame.pack()
@@ -78,11 +78,15 @@ def main():
     dependent_index_selection = tk.OptionMenu(dependent_selections, dependent_index, value='')
     
 
-    independent_selection.grid(row=0, column=0)
-    independent_index_selection.grid(row=0, column=1)
+    tk.Label(independent_selections, text="Independent Variable: ").grid(row=0, column=0)
+    independent_selection.grid(row=0, column=1)
+    tk.Label(independent_selections, text="Index: ").grid(row=0, column=2)
+    independent_index_selection.grid(row=0, column=3)
 
-    dependent_selection.grid(row=0, column=0)
-    dependent_index_selection.grid(row=0, column=1)
+    tk.Label(dependent_selections, text="Dependent Variable: ").grid(row=0, column=0)
+    dependent_selection.grid(row=0, column=1)
+    tk.Label(dependent_selections, text="Index: ").grid(row=0, column=2)
+    dependent_index_selection.grid(row=0, column=3)
 
 
     #======================Variable Index Management========================================#
@@ -133,9 +137,6 @@ def main():
                 arr = line.split(',')
                 xArr.append(float(arr[xIndex]))
                 yArr.append(float(arr[yIndex]))
-                
-        print(xArr)
-        print(yArr)
 
         plt.clf()
         plt.plot(xArr, yArr)
@@ -143,6 +144,8 @@ def main():
 
     generate = tk.Button(frame, text="Generate Graph", command=generate_graph)
     generate.pack()
+
+    #===========================Main====================#
 
     tk.mainloop()
 
