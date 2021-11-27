@@ -12,7 +12,7 @@ def main():
     #=============================Setup Window and scrollbar============================#
     window = tk.Tk()
     window.title("Data Viewer")
-    window.geometry("400x400")
+    window.geometry("200x200")
 
     frame = tk.Frame(window)
     frame.pack()
