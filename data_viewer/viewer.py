@@ -1,10 +1,10 @@
 import tkinter as tk
-from tkinter import ttk
 from tkinter import filedialog
 
 import os
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 
 def main():
     script_path = Path(os.path.realpath(__file__)).parent
@@ -14,61 +14,23 @@ def main():
     window.title("Data Viewer")
     window.geometry("400x400")
 
-    main_frame = tk.Frame(window)
-    main_frame.pack(fill = tk.BOTH, expand=1)
-
-    my_canvas = tk.Canvas(main_frame)
-    my_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-
-    my_scrollbar = ttk.Scrollbar(main_frame, orient=tk.VERTICAL, command=my_canvas.yview)
-    my_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-    my_canvas.configure(yscrollcommand=my_scrollbar.set)
-    my_canvas.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))
-  
-
-    root = tk.Frame(my_canvas)
-    my_canvas.create_window((0,0), window=root, anchor="nw")
-
-    frame = tk.Frame(root)
-    frame.bind('<Configure>', lambda e: my_canvas.configure(scrollregion=my_canvas.bbox("all")))  
-
+    frame = tk.Frame(window)
     frame.pack()
 
-    #==========================================Variable Selection=============================================#
+    #==========================================Directory Selection=============================================#
+    
     global parent_directory
     parent_directory = script_path
     global variables
     variables = {}
 
-    independent_selections = tk.Frame(frame)
-    dependent_selections = tk.Frame(frame)
-    independent_selections.pack()
-    dependent_selections.pack()
-
-    independent = tk.StringVar()
-    independent_index = tk.StringVar()
-    dependent = tk.StringVar()
-    dependent_index = tk.StringVar()
-
-    independent_selection = tk.OptionMenu(independent_selections, independent, value='', *(variables.keys()))
-    independent_index_selection = tk.OptionMenu(independent_selections, independent_index, value='')
-
-    dependent_selection = tk.OptionMenu(dependent_selections, dependent, value='', *(variables.keys()))
-    dependent_index_selection = tk.OptionMenu(dependent_selections, dependent_index, value='')
-    
-
-    independent_selection.grid(row=0, column=0)
-    independent_index_selection.grid(row=0, column=1)
-
-    dependent_selection.grid(row=0, column=0)
-    dependent_index_selection.grid(row=0, column=1)
-
     def select_directory():
         global parent_directory
         parent_directory = Path(filedialog.askdirectory(title="Select Run Directory", initialdir=script_path))
 
-        with open(Path(Path.joinpath(parent_directory, './structure.txt')), 'r') as struct_file:
+        variables.clear()
+
+        with open(Path.joinpath(parent_directory, './structure.txt'), 'r') as struct_file:
             struct_file.readline()
             for line in struct_file.readlines():
                 line = line.strip()
@@ -94,6 +56,36 @@ def main():
                 independent_selection['menu'].add_command(label=choice, command=tk._setit(independent, choice))
                 dependent_selection['menu'].add_command(label=choice, command=tk._setit(dependent, choice))
 
+    runs_directory_select = tk.Button(frame, text="Select Data Directory", command=select_directory)
+    runs_directory_select.pack()
+
+    #==========================================Variable Selection==================================#
+
+    independent_selections = tk.Frame(frame)
+    dependent_selections = tk.Frame(frame)
+    independent_selections.pack()
+    dependent_selections.pack()
+
+    independent = tk.StringVar()
+    independent_index = tk.StringVar()
+    dependent = tk.StringVar()
+    dependent_index = tk.StringVar()
+
+    independent_selection = tk.OptionMenu(independent_selections, independent, value='', *(variables.keys()))
+    independent_index_selection = tk.OptionMenu(independent_selections, independent_index, value='')
+
+    dependent_selection = tk.OptionMenu(dependent_selections, dependent, value='', *(variables.keys()))
+    dependent_index_selection = tk.OptionMenu(dependent_selections, dependent_index, value='')
+    
+
+    independent_selection.grid(row=0, column=0)
+    independent_index_selection.grid(row=0, column=1)
+
+    dependent_selection.grid(row=0, column=0)
+    dependent_index_selection.grid(row=0, column=1)
+
+
+    #======================Variable Index Management========================================#
     
     def independent_changed(*args):
         if(independent.get() not in variables.keys()):
@@ -115,12 +107,42 @@ def main():
     dependent.trace('w', dependent_changed)
 
         
+    #=====================================Graph Generation==========================================#
 
+    
+    def generate_graph():
+        xArr = []
+        yArr = []
 
-    runs_directory_select = tk.Button(window, text="Select Data Directory", command=select_directory)
-    runs_directory_select.pack(side=tk.TOP)
+        xIndex = 0
+        for key, value in variables.items():
+            if(key == independent.get()):
+                xIndex+=int(independent_index.get())
+                break
+            xIndex+=value
 
+        yIndex = 0
+        for key, value in variables.items():
+            if(key == dependent.get()):
+                yIndex+=int(dependent_index.get())
+                break
+            yIndex+=value
+                
+        with open(Path.joinpath(parent_directory, './data.csv'), 'r') as data_file:
+            for line in data_file.readlines():
+                arr = line.split(',')
+                xArr.append(float(arr[xIndex]))
+                yArr.append(float(arr[yIndex]))
+                
+        print(xArr)
+        print(yArr)
 
+        plt.clf()
+        plt.plot(xArr, yArr)
+        plt.show()
+
+    generate = tk.Button(frame, text="Generate Graph", command=generate_graph)
+    generate.pack()
 
     tk.mainloop()
 
