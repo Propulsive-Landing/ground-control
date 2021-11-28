@@ -31,7 +31,7 @@ def telem_frame_handler(queue, path):
     plt.ion()
     #plt.show()
 
-    file = open(path, 'w')
+    file = open(path, 'a')
 
     xArr = []
     yArr = []
@@ -133,6 +133,24 @@ def main():
     rf = RF(port_input.get(), baud_input.get(), telem_string=struct_string)
 
     #==================Logging and Graphic Processes==================#
+
+    with open(os.path.join(directory, Path('./data.csv')), 'w') as data_file, open(os.path.join(directory, Path('./structure.txt'))) as structure_file:
+        names = []
+        structure_file.readline()
+        for line in structure_file.readlines():
+            line = line.strip()
+            arr = line.split(',')
+
+            if(arr[1] == '1'):
+                names.append(arr[2])
+                continue
+            else:
+                for i in range(0, int(arr[1])):
+                    names.append(arr[2] + "["+str(i)+"]")
+        for x in names:
+            data_file.write(x + ",")
+        data_file.write("\n")
+
     telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue, os.path.join(directory, Path('./data.csv'))))
     telem_process.start()
 
