@@ -24,37 +24,50 @@ def main():
     global variables
     variables = {}
 
+
+    def update_dropdown_from_variables():
+        independent_selection['menu'].delete(0, 'end')
+        independent_index_selection['menu'].delete(0, 'end')
+        dependent_selection['menu'].delete(0, 'end')
+        dependent_index_selection['menu'].delete(0, 'end')
+        independent.set('')
+        independent_index.set('')
+        dependent.set('')
+        dependent_index.set('')
+
+        dependent_index_selection['menu'].add_command(label=1, command=tk._setit(dependent_index, 1))
+        independent_index_selection['menu'].add_command(label=1, command=tk._setit(independent_index, 1))
+
+        for choice in variables.keys():
+            independent_selection['menu'].add_command(label=choice, command=tk._setit(independent, choice))
+            dependent_selection['menu'].add_command(label=choice, command=tk._setit(dependent, choice))
+
     def select_directory():
         global parent_directory
         parent_directory = Path(filedialog.askdirectory(title="Select Run Directory", initialdir=script_path))
 
+        global variables
         variables.clear()
 
-        with open(Path.joinpath(parent_directory, './structure.txt'), 'r') as struct_file:
-            struct_file.readline()
-            for line in struct_file.readlines():
-                line = line.strip()
-                arr = line.split(',')
-                name = arr[2]
-                num = arr[1]
+        try:
+            with open(Path.joinpath(parent_directory, './structure.txt'), 'r') as struct_file:
+                struct_file.readline()
+                for line in struct_file.readlines():
+                    line = line.strip()
+                    arr = line.split(',')
+                    name = arr[2]
+                    num = arr[1]
 
-                variables[name] = int(num)
-
-            independent_selection['menu'].delete(0, 'end')
-            independent_index_selection['menu'].delete(0, 'end')
-            dependent_selection['menu'].delete(0, 'end')
-            dependent_index_selection['menu'].delete(0, 'end')
-            independent.set('')
-            independent_index.set('')
-            dependent.set('')
-            dependent_index.set('')
+                    variables[name] = int(num)
             
-            dependent_index_selection['menu'].add_command(label=1, command=tk._setit(dependent_index, 1))
-            independent_index_selection['menu'].add_command(label=1, command=tk._setit(independent_index, 1))
+            update_dropdown_from_variables()
 
-            for choice in variables.keys():
-                independent_selection['menu'].add_command(label=choice, command=tk._setit(independent, choice))
-                dependent_selection['menu'].add_command(label=choice, command=tk._setit(dependent, choice))
+        except:
+            with open(Path.joinpath(parent_directory, './data.csv'), 'r') as data_file:
+                arr = data_file.readline().strip().split(',')
+                variables = {a: 1 for a in arr}
+                
+            update_dropdown_from_variables()
 
     runs_directory_select = tk.Button(frame, text="Select Data Directory", command=select_directory)
     runs_directory_select.pack()
@@ -135,8 +148,11 @@ def main():
         with open(Path.joinpath(parent_directory, './data.csv'), 'r') as data_file:
             for line in data_file.readlines():
                 arr = line.split(',')
-                xArr.append(float(arr[xIndex]))
-                yArr.append(float(arr[yIndex]))
+                try:
+                    xArr.append(float(arr[xIndex]))
+                    yArr.append(float(arr[yIndex]))
+                except ValueError:
+                    pass
 
         plt.clf()
         plt.plot(xArr, yArr)

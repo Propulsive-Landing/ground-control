@@ -1,3 +1,0 @@
-native byte order, standard size, no alignment
-unsigned int (4B),1,magic_number
-unsigned short (2B),1,mode
