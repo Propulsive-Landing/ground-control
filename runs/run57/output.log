@@ -1,0 +1,449 @@
+[0]flash started
+[0]telemetry initialized
+[0]program start
+[0]SPI, I2C, RF communication pins set
+[0]TVC initialized
+[0]testing TVC...
+[0]TVC test completed
+[0]sensors initialized
+[0]timing set, starting PL_COUNTDOWN
+invalid frame
+(3735928559, 0, 0, 10.615031, 4284.352309, 4.431152279721573, 0.2481445276644081, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.4916681462400413e-154, -5.266131284e-315, 2.000001429168765, 5.29939623e-315, 2.6815615859885194e+154, -2.681562224648631e+154, 1.4916685008800293e-154, 2.0000014300457494, -2.681563498168291e+154, -8.698320631698292e-46, -1.4916692121680514e-154, 5.40281991e-315, -2.6167735418924488e-36, -1.53246489737483e+188, 3.1361104820073363e+230, -1.5324648973695134e+188, 5.2822174e-315, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -65536.0, -3.105223694418174e+231, 1.35953475362e-312, 5.0112672546672e-310, 2.497996e-318, 1.17627e-319, 2.71549148875e-312, 0.0, 2.71549148875e-312, 0.0, 0.0, 0.0, 0.0, -4.186908928131383e+299, 3.16e-322, -1.727233711018889e-77, 3.1e-322, 0.0, 0.0, 1.3292138442641763e-247, 2.6029520032030912e-33, 1.2256263485728796e-247, 9.812112082580815e-35, 191)
+[0, 0, 0]
+18 required to align
+[87, 248, 209]
+15 required to align
+[255, 77, 58]
+15 required to align
+[17, 89, 248]
+16 required to align
+[16, 212, 128]
+15 required to align
+[183, 153, 155]
+16 required to align
+[254, 225, 163]
+15 required to align
+[182, 25, 136]
+10 required to align
+[114, 51, 69]
+16 required to align
+[195, 194, 143]
+15 required to align
+[253, 232, 34]
+15 required to align
+[0, 0, 0]
+16 required to align
+[159, 11, 183]
+15 required to align
+[0, 0, 0]
+16 required to align
+[255, 0, 0]
+15 required to align
+[194, 191, 45]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+10 required to align
+[0, 0, 0]
+8 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[10, 215, 163]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[64, 0, 0]
+15 required to align
+[176, 63, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[117, 60, 191]
+15 required to align
+[173, 149, 53]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[167, 86, 248]
+16 required to align
+[187, 246, 123]
+15 required to align
+[34, 193, 163]
+15 required to align
+[222, 215, 175]
+16 required to align
+[220, 107, 62]
+15 required to align
+[65, 113, 143]
+15 required to align
+[63, 148, 175]
+16 required to align
+[230, 63, 108]
+15 required to align
+[254, 128, 64]
+15 required to align
+[172, 169, 192]
+16 required to align
+[0, 0, 248]
+15 required to align
+[135, 137, 194]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[32, 185, 58]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[239, 190, 173, 222, 0]
+13 required to align
+invalid frame
+(3735928559, 0, 120, 13.3083, 0.00209, 4.3957030614838, 0.17724609118886292, 95, 1022, 0, 96, nan, 0.0, nan, 0.0, 0.0, 0.0, 0.0, -1.4916681462400413e-154, 5.387277894e-315, 5.27908621e-315, 0.0, 0.0, 0.0, 2.1608693224588706e+20, 1.8236284373600372e+80, -9.661775654044564e+272, -4.278351907553732e+223, 5.246378677e-315, 0.0, 0.0, -2.8752487900644745e-94, 1.1524401502421764e-33, -3.4408965322614595e-191, -3.792743627736066e-94, -6.834428725957536e+234, 9.711086681565682e-308, 1.149999283321746e-58, -6.927101350559402e+182, 2.361883438554614e-296, 1.672382101602576e-109, -1.4916692107869675e-154, -1.970886737885275e+20, 2.174833931222984e+160, 3.70554423098261e-81, 1.2245482300914729e+55, -2.3197982665614905e-48, -5.299781600920824e-129, 1.434768773138029e-244, -1.0771597276087752e-71, 1.59699118e-314, 0.0, 1.060738863e-314, 1.6723818495828217e-109, 1.58795074e-314, 0.0, 1.060738863e-314, 2.1217367583e-314, 1.6723818495828217e-109, -5.852948334582031e+306, 5.315843196e-315, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.4916681462400413e-154, -1.854556293184694e+53, 8.1486484167023e-310, 5.154787840392105e-97, 1.8783101330585052e+90, 5.72740327091648e-224, -48103489536.00049, 5.5518200279362e-309, 5.10637067137883e-310, -1.0565890622713305e+270, 6.27e-322, -1.0565890622713305e+270, 6.27e-322, 0.0, 0)
+[0, 0, 0]
+17 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[40, 92, 143]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[63, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[60, 63, 184]
+15 required to align
+[254, 65, 191]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[217, 64, 248]
+15 required to align
+[59, 98, 24]
+16 required to align
+[174, 40, 54]
+15 required to align
+[160, 160, 221]
+15 required to align
+[190, 170, 159]
+15 required to align
+[108, 84, 146]
+16 required to align
+[63, 14, 154]
+15 required to align
+[63, 9, 51]
+16 required to align
+[128, 64, 4]
+15 required to align
+[178, 169, 192]
+15 required to align
+[0, 248, 127]
+16 required to align
+[152, 89, 193]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[64, 241, 191]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[239, 190, 173, 222, 0, 180]
+13 required to align
+invalid frame
+(3735928559, 0, 180, 14.635253, 0.001142, 4.431152279721573, 0.2126953094266355, 94, 1027, 0, 94, nan, 0.0, nan, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 9.42, -2.72, -0.11, 0.0, 0.0, 0.0, 123456.1015625, 0.3125, -1.6726844879340664e+199, -5.972636885315469e+116, -1.215333550905769e-48, -1.2761437203053358e-210, -1.0519009510318688e-111, -1.1345538554342435e+192, -2.1670026216677338e-269, 4.0390905990344423e-284, -1.491669211998152e-154, -5.52745059186091e-187, 5.804180584115945e+96, 1.8842025183036917e-225, 1.353656429274499e-138, -1.010372514547077e-11, -2.5922693034584324e+73, -1.5173979277457504e+218, -5.329945289147506e-222, 1.5969915543e-314, 0.0, 1.060738863e-314, 4.0390899620016736e-284, 1.5897574253e-314, 0.0, 1.060738863e-314, 2.1217367583e-314, 4.0390899620016736e-284, 5.446424643640832e+29, 5.338214083e-315, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.4916681462400413e-154, -1.854556293184694e+53, 1.140803395162494e-309, 3.2482488525207293e-84, 1.2212255566897075e+92, 5.72740327091648e-224, -4.154298437211221e-67, 1.1060181581954227e-308, 5.0520475791301e-310, -1.0565890622713305e+270, 6.27e-322, -1.0565890622713305e+270, 6.27e-322, 0.0, 0)
+[0, 0, 0]
+19 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[92, 143, 194]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[124, 252, 10]
+16 required to align
+[191, 60, 206]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 106]
+16 required to align
+[247, 209, 191]
+15 required to align
+[12, 81, 191]
+16 required to align
+[39, 248, 209]
+15 required to align
+[255, 75, 39]
+15 required to align
+[65, 183, 48]
+13 required to align
+[244, 130, 39]
+20 required to align
+[0, 0, 0]
+16 required to align
+[191, 61, 224]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[250, 254, 202]
+13 required to align
+[0, 0, 0]
+11 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[215, 163, 112]
+15 required to align
+[236, 81, 184]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[192, 63, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[182, 218, 63]
+15 required to align
+[248, 211, 66]
+15 required to align
+[0, 0, 0]
+16 required to align
+[56, 82, 247]
+15 required to align
+[193, 220, 220]
+16 required to align
+[156, 171, 247]
+15 required to align
+[115, 23, 26]
+15 required to align
+[230, 181, 250]
+16 required to align
+[174, 8, 224]
+12 required to align
+[0, 248, 127]
+21 required to align
+[0, 0, 248]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[250, 254, 202]
+9 required to align
+[0, 0, 0]
+19 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[174, 71, 225]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[64, 0, 0]
+16 required to align
+[176, 63, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[233, 87, 63]
+15 required to align
+[235, 26, 90]
+15 required to align
+[0, 0, 0]
+12 required to align
+[65, 162, 234]
+11 required to align
+[63, 115, 87]
+16 required to align
+[230, 63, 89]
+15 required to align
+[91, 130, 64]
+15 required to align
+[176, 169, 192]
+16 required to align
+[0, 0, 248]
+15 required to align
+[208, 15, 147]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[127, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[250, 254, 202]
+10 required to align
+[0, 0, 0]
+20 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[51, 51, 51]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[63, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[80, 191, 158]
+15 required to align
+[191, 69, 63]
+15 required to align
+[0, 0, 0]
+11 required to align
+[0, 0, 0]
+10 required to align
+[242, 114, 203]
+15 required to align
+[97, 27, 225]
+15 required to align
+[165, 233, 206]
+16 required to align
+[63, 236, 240]
+15 required to align
+[191, 182, 41]
+16 required to align
+[213, 191, 0]
+15 required to align
+[59, 171, 191]
+15 required to align
+[249, 185, 191]
+16 required to align
+[191, 90, 185]
+15 required to align
+[104, 173, 254]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+15 required to align
+[0, 0, 0]
+16 required to align
+[127, 0, 0]
+15 required to align
+[127, 0, 0]
+16 required to align
+[248, 127, 0]
+15 required to align
+[0, 248, 127]
+15 required to align
+[244, 32, 65]
+16 required to align
+[239, 190, 173, 222, 1, 74, 1, 0]
+7 required to align
+[0]SD transfer started
+run_9_data.csv
+[421]File writing complete; code: 1 erase_flash: 1
+[0]Erasing flash...

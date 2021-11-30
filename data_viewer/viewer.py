@@ -154,7 +154,6 @@ def main():
                 except ValueError:
                     pass
 
-        plt.clf()
         plt.plot(xArr, yArr)
         plt.show()
 

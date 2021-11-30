@@ -1,0 +1,3 @@
+native byte order, standard size, no alignment
+unsigned int (4B),1,
+unsigned char (1B),1,
