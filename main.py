@@ -26,10 +26,9 @@ def log_handler(queue, path):
 def telem_frame_handler(queue, path):
     print("start frame handling")
 
-    # import matplotlib.pyplot as plt
-    # plt.axis([0, 10, 0, 10])
-    # plt.ion()
-    # plt.show()
+    import matplotlib.pyplot as plt
+    plt.ion()
+    plt.show()
 
     file = open(path, 'a')
 
@@ -40,14 +39,16 @@ def telem_frame_handler(queue, path):
         message = queue.get()
         if(message == 'STOP'):
            break
-        print(message)
-        # xArr.append(message[3])
-        # yArr.append((message[11]))
+        #print(message)
+        xArr.append(message[3])
+        yArr.append((message[12]))
+
+        print(xArr, yArr)
         
-        # plt.clf()
-        # plt.plot(xArr[-20:], yArr[-20:])
-        # plt.draw()
-        # plt.pause(0.00001)
+        plt.clf()
+        plt.plot(xArr, yArr)
+        plt.draw()
+        plt.pause(0.00001)
 
         for x in message:
            file.write(str(x) + ",")
