@@ -108,6 +108,13 @@ class RF():
                         except:
                             self.handle_string_error("Character value exceeds ascii values" + str(parsedString))
 
+    def read_string(self):
+        line = self._comport.readline()
+        arr = line.split(',')
+        if(arr[0] == "DATA"):
+            self.telem_frame_queue.put(tuple(arr[1:]))
+        else:
+            self.log_queue.put(arr[1])
 
     def arm(self):
         self._comport.write(bytes('arm\n', 'utf8'))
