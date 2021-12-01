@@ -175,6 +175,11 @@ def main():
     while(listening):
         rf.read_binary()
         window.update()
+
+    f = open(os.path.join(directory, Path('./bytes.log')), 'w')
+    for elem in rf._history:
+        f.write(str(elem) + " ")
+    f.close()
     
 
 if __name__ == "__main__":

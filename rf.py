@@ -15,6 +15,7 @@ class RF():
         self._backlog_bytes_num = backlog_threshold #how many bytes to be in list for a backlog
 
         self._bytes_received = [] #This list holds recieved bytes and this list is searched through to find packets
+        self._history = []
         self._TELEM_HEADER =  [239, 190, 173, 222] #4 byte heaeder to indicate telem frame, 0xDEADBEEF
         self._STRING_HEADER = [206, 250, 186, 186] #4 byte header to indicate string data, 0xBABAFACE
         self._FOOTER = 3405707998 #4 byte uint32_t to indicate ending of string or telem frame // 202, 254, 250, 222
@@ -51,6 +52,7 @@ class RF():
             
             received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
             self._bytes_received.extend(list(received)) #adds recieved data to a list
+            self._history.extend(list(received))
             
             #print(self._bytes_received)
 
