@@ -42,7 +42,7 @@ def telem_frame_handler(queue, path):
         #print(message)
         try:
             xArr.append(float(message[3]))
-            yArr.append(float((message[12])))
+            yArr.append(float((message[11])))
         except ValueError:
             pass
 
