@@ -22,7 +22,7 @@ This repository contains scripts and resources to monitor and control the launch
  4. Enter the XBee dongle port name into the GUI (e.g. "COM11")
  5. Click the `Select Data Directory` button to select where you want the folder for the run to be generated.
  6. Click the `start recording` button in the GUI
- 7. When the test or launch is complete, click `save and exit`
+ 7. When the test/launch is complete, click `save and exit`
   
   ## Structure Synchronization
   
