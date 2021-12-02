@@ -64,7 +64,8 @@ def main():
 
         except:
             with open(Path.joinpath(parent_directory, './data.csv'), 'r') as data_file:
-                arr = data_file.readline().strip().split(',')
+                line = data_file.readline()
+                arr = line.strip().split(',')
                 variables = {a: 1 for a in arr}
                 
             update_dropdown_from_variables()

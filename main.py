@@ -51,7 +51,7 @@ def telem_frame_handler(queue, path):
         
         
         plt.clf()
-        plt.plot(xArr, yArr)
+        plt.plot(xArr[-40:], yArr[-40:])
         plt.draw()
         plt.pause(0.00001)
 
