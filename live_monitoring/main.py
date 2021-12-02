@@ -66,7 +66,7 @@ def telem_frame_handler(queue, path):
 
 def main():
     #============Get struct string===============#
-    script_path = Path(os.path.realpath(__file__)).parent
+    script_path = Path(os.path.realpath(__file__)).parent.parent
     structure_string_path = Path("./structure_manager/data/struct_string.txt")
 
     structure_string_path = os.path.join(script_path, structure_string_path)
