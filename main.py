@@ -40,10 +40,13 @@ def telem_frame_handler(queue, path):
         if(message == 'STOP'):
            break
         #print(message)
-        xArr.append(message[3])
-        yArr.append((message[12]))
+        try:
+            xArr.append(float(message[3]))
+            yArr.append(float((message[12])))
+        except ValueError:
+            pass
 
-        print(xArr, yArr)
+        
         
         plt.clf()
         plt.plot(xArr, yArr)
@@ -54,6 +57,7 @@ def telem_frame_handler(queue, path):
            file.write(str(x) + ",")
         file.write('\n')
 
+    plt.close()
     file.close()
     print("END Frame handling")
 
