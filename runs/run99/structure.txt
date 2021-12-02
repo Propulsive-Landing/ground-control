@@ -29,4 +29,4 @@ double (8B),6,x
 double (8B),6,dx
 double (8B),2,current_u
 double (8B),2,servo_u
-unsigned int (4B),1,footer
+unsigned int (4B),1,foote

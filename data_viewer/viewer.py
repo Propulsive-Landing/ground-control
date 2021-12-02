@@ -145,6 +145,8 @@ def main():
                 break
             yIndex+=value
                 
+        print(xIndex, yIndex)
+
         with open(Path.joinpath(parent_directory, './data.csv'), 'r') as data_file:
             for line in data_file.readlines():
                 arr = line.split(',')
