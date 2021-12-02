@@ -106,6 +106,7 @@ def main():
     baud_input = tk.StringVar()
     baud = tk.Entry(options, width=8, textvariable=baud_input)
     baud.grid(row=1, column=1)
+    baud_input.set("9600")
 
 
     #===============Directory/File Management Setup=========#
