@@ -19,8 +19,8 @@ def main():
 
     #==========================================Directory Selection=============================================#
     
-    global parent_directory
-    parent_directory = script_path
+    global file_path
+    file_path = script_path
     global variables
     variables = {}
 
@@ -43,14 +43,14 @@ def main():
             dependent_selection['menu'].add_command(label=choice, command=tk._setit(dependent, choice))
 
     def select_directory():
-        global parent_directory
-        parent_directory = Path(filedialog.askdirectory(title="Select Run Directory", initialdir=script_path))
+        global file_path
+        file_path = Path(filedialog.askopenfilename(title="Select CSV", filetypes=[("CSV Files", "*.csv")], initialdir=script_path))
 
         global variables
         variables.clear()
 
         try:
-            with open(Path.joinpath(parent_directory, './structure.txt'), 'r') as struct_file:
+            with open(Path.joinpath(file_path.parent, './structure.txt'), 'r') as struct_file:
                 struct_file.readline()
                 for line in struct_file.readlines():
                     line = line.strip()
@@ -63,14 +63,14 @@ def main():
             update_dropdown_from_variables()
 
         except:
-            with open(Path.joinpath(parent_directory, './data.csv'), 'r') as data_file:
+            with open(file_path, 'r') as data_file:
                 line = data_file.readline()
                 arr = line.strip().split(',')
                 variables = {a: 1 for a in arr}
                 
             update_dropdown_from_variables()
 
-    runs_directory_select = tk.Button(frame, text="Select Data Directory", command=select_directory)
+    runs_directory_select = tk.Button(frame, text="Select CSV File", command=select_directory)
     runs_directory_select.pack()
 
     #==========================================Variable Selection==================================#
@@ -148,7 +148,7 @@ def main():
                 
         print(xIndex, yIndex)
 
-        with open(Path.joinpath(parent_directory, './data.csv'), 'r') as data_file:
+        with open(Path(file_path), 'r') as data_file:
             for line in data_file.readlines():
                 arr = line.split(',')
                 try:

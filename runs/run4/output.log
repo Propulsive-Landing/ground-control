@@ -1,0 +1,15 @@
+[0]flash failed to start
+[0]telemetry initialized
+[0]program start
+[0]SPI, I2C, RF communication pins set
+[0]TVC initialized
+[0]testing TVC...
+[0]TVC test completed
+Invalid String, no footer(b'[', b'\xf8', b'\xce', b'\xfa', b'\xba', b'\xba', b'\x10', b'[', b'0', b']', b'f', b'l', b'a', b's', b'h', b' ', b's', b't', b'a', b'r', b't', b'e', b'd', b'\xde', 3469410042)
+aligned: [250, 186, 186, 34, 91, 48, 93, 116, 114, 97, 110, 115, 102, 101, 114, 114, 105] 14 byes
+aligned: [114, 114, 105, 110, 103, 32, 100, 97, 116, 97, 32, 116, 111, 32, 83, 68, 32, 99] 15 byes
+aligned: [68, 32, 99, 97, 114, 100, 46, 46, 46, 222, 250, 254, 202] 10 byes
+aligned: [250, 254, 202, 206, 250, 186, 186, 22, 91, 48, 93, 83, 68, 32, 116, 114, 97, 110, 115, 102, 101] 3 byes
+[0]SD transfer started
+run_5_data.csv
+[510]File writing complete; code: 1 erase_flash: 1

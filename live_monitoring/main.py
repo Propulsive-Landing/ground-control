@@ -32,7 +32,7 @@ def telem_frame_handler(queue, path):
 
     file = open(path, 'a')
 
-    xArr = []
+    #xArr = []
     yArr = []
 
     while(True):
@@ -46,11 +46,11 @@ def telem_frame_handler(queue, path):
         file.write('\n')
 
         try:
-            xArr.append(float(message[1]))
+            #xArr.append(float(message[1]))
             yArr.append(float((message[2])))
 
             plt.clf()
-            plt.plot(xArr[-40:], yArr[-40:])
+            plt.plot(yArr[-40:])
             plt.draw()
             plt.pause(0.00001)
         except ValueError:
