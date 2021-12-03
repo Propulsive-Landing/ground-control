@@ -1,6 +1,5 @@
 from multiprocessing import Process, Queue
 
-from data_packet import *
 import serial
 import tkinter as tk
 from struct import *

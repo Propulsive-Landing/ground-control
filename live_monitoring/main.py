@@ -40,24 +40,24 @@ def telem_frame_handler(queue, path):
         if(message == 'STOP'):
            break
         #print(message)
+
+        for x in message:
+            file.write(str(x) + ",")
+        file.write('\n')
+
         try:
             xArr.append(float(message[1]))
             yArr.append(float((message[2])))
+
+            plt.clf()
+            plt.plot(xArr[-40:], yArr[-40:])
+            plt.draw()
+            plt.pause(0.00001)
         except ValueError:
             pass
         except IndexError:
             pass
 
-        
-        
-        plt.clf()
-        plt.plot(xArr[-40:], yArr[-40:])
-        plt.draw()
-        plt.pause(0.00001)
-
-        for x in message:
-           file.write(str(x) + ",")
-        file.write('\n')
 
     plt.close()
     file.close()
