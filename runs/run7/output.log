@@ -1,0 +1,14 @@
+[0]flash started
+[0]telemetry initialized
+[0]program start
+[0]SPI, I2C, RF communication pins set
+[0]TVC initialized
+[0]testing TVC...
+[0]TVC test completed
+[0]sensors initialized
+[0]timing set, starting PL_COUNTDOWN
+[2382]Entering PL_FIRE
+[6874]Entering IDLE
+[0]SD transfer started
+run_11_data.csv
+[6874]File writing complete; code: 1 erase_flash: 1

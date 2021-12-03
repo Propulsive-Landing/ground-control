@@ -26,9 +26,19 @@ def log_handler(queue, path):
 def telem_frame_handler(queue, path):
     print("start frame handling")
 
-    import matplotlib.pyplot as plt
-    plt.ion()
-    plt.show()
+    
+    import tkinter as tk
+    window = tk.Tk()
+    window.title("DATA")
+    window.geometry("200x200")
+
+    v = tk.StringVar()
+    v.set('0')
+    l = tk.Entry(window, textvariable=v)
+    l.pack()
+    # # import matplotlib.pyplot as plt
+    # plt.ion()
+    # plt.show()
 
     file = open(path, 'a')
 
@@ -36,6 +46,7 @@ def telem_frame_handler(queue, path):
     yArr = []
 
     while(True):
+        window.update()
         message = queue.get()
         if(message == 'STOP'):
            break
@@ -47,19 +58,19 @@ def telem_frame_handler(queue, path):
 
         try:
             #xArr.append(float(message[1]))
-            yArr.append(float((message[2])))
-
-            plt.clf()
-            plt.plot(yArr[-40:])
-            plt.draw()
-            plt.pause(0.00001)
+            # yArr.append(float((message[3])))
+            v.set(message[3])
+            # plt.clf()
+            # plt.plot(yArr[-40:])
+            # plt.draw()
+            # plt.pause(0.00001)
         except ValueError:
             pass
         except IndexError:
             pass
 
 
-    plt.close()
+    # plt.close()
     file.close()
     print("END Frame handling")
 

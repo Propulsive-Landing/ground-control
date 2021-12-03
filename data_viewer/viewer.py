@@ -3,6 +3,7 @@ from tkinter import filedialog
 
 import os
 from pathlib import Path
+import math
 
 import matplotlib.pyplot as plt
 
@@ -132,12 +133,11 @@ def main():
         xArr = []
         yArr = []
 
-        xIndex = 0
-        for key, value in variables.items():
-            if(key == independent.get()):
-                xIndex+=int(independent_index.get())
-                break
-            xIndex+=value
+        explicit_x_axis = False
+
+        if(independent.get() in variables.keys()):
+            explicit_x_axis = True
+
 
         yIndex = 0
         for key, value in variables.items():
@@ -145,6 +145,16 @@ def main():
                 yIndex+=int(dependent_index.get())
                 break
             yIndex+=value
+        
+        xIndex = 0
+        if(explicit_x_axis):
+            for key, value in variables.items():
+                if(key == independent.get()):
+                    xIndex+=int(independent_index.get())
+                    break
+                xIndex+=value
+
+
                 
         print(xIndex, yIndex)
 
@@ -157,7 +167,10 @@ def main():
                 except ValueError:
                     pass
 
-        plt.plot(xArr, yArr)
+        if(explicit_x_axis):
+            plt.plot(xArr, yArr)
+        else:
+            plt.plot([angle*(180/math.pi) for angle in yArr])
         plt.show()
 
     generate = tk.Button(frame, text="Generate Graph", command=generate_graph)
