@@ -152,25 +152,23 @@ def main():
                 if(key == independent.get()):
                     xIndex+=int(independent_index.get())
                     break
-                xIndex+=value
+                xIndex+=value       
 
-
-                
         print(xIndex, yIndex)
 
         with open(Path(file_path), 'r') as data_file:
             for line in data_file.readlines():
                 arr = line.split(',')
                 try:
-                    xArr.append(float(arr[xIndex]))
-                    yArr.append(float(arr[yIndex]))
+                    xArr.append((180/math.pi)*float(arr[xIndex]))
+                    yArr.append((180/math.pi)*float(arr[yIndex]))
                 except ValueError:
                     pass
 
         if(explicit_x_axis):
             plt.plot(xArr, yArr)
         else:
-            plt.plot([angle*(180/math.pi) for angle in yArr])
+            plt.plot(yArr)
         plt.show()
 
     generate = tk.Button(frame, text="Generate Graph", command=generate_graph)

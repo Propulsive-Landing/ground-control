@@ -6,6 +6,7 @@ from tkinter import filedialog
 from multiprocessing import Process, cpu_count
 
 import os
+import math
 from pathlib import Path
 from shutil import copyfile
 
@@ -23,43 +24,61 @@ def log_handler(queue, path):
     file.close()
     print("end log handling")
 
-def telem_frame_handler(queue, path):
+def telem_frame_handler(queue, current_val, path):
     print("start frame handling")
 
-    
+
+    #============Text Output========#    
     import tkinter as tk
     window = tk.Tk()
     window.title("DATA")
     window.geometry("200x200")
+    window.after(1, lambda: window.focus_force())
 
-    v = tk.StringVar()
-    v.set('0')
-    l = tk.Entry(window, textvariable=v)
-    l.pack()
+    x_axis = tk.StringVar()
+    x_axis.set('0')
+    y_axis = tk.StringVar()
+    y_axis.set('0')
+
+    x = tk.Entry(window, textvariable=x_axis)
+    x_label = tk.Label(window, text="X: ")
+    x_label.pack()
+    x.pack()
+
+    y = tk.Entry(window, textvariable=y_axis)
+    y.pack()
+
+    #=========Graph Output===========#
     # # import matplotlib.pyplot as plt
     # plt.ion()
     # plt.show()
+    #xArr = []
+    #yArr = []
 
+    #=========File Intiialization====#
     file = open(path, 'a')
 
-    #xArr = []
-    yArr = []
+
 
     while(True):
-        window.update()
+        #=====Handling and file writing======#
         message = queue.get()
         if(message == 'STOP'):
            break
-        #print(message)
 
         for x in message:
             file.write(str(x) + ",")
         file.write('\n')
 
         try:
-            #xArr.append(float(message[1]))
+            #=========Text Output=========#
+            x_axis.set((180/math.pi)*current_val[2])
+            y_axis.set((180/math.pi)*current_val[3])
+            window.update()
+
+            #=========Graph Output=========#
+            # xArr.append(float(message[1]))
             # yArr.append(float((message[3])))
-            v.set(message[3])
             # plt.clf()
             # plt.plot(yArr[-40:])
             # plt.draw()
@@ -72,6 +91,7 @@ def telem_frame_handler(queue, path):
 
     # plt.close()
     file.close()
+    window.destroy()
     print("END Frame handling")
 
 
@@ -148,8 +168,16 @@ def main():
     os.mkdir(directory)
     
     copyfile(os.path.join(script_path, Path('./structure_manager/data/structure.txt')), os.path.join(directory, Path('./structure.txt')))
+
+    #============Get Number of Attributes in struct==================#
+    attribute_num = 0
+    with open(os.path.join(directory, Path('./structure.txt'))) as structure_file:
+        structure_file.readline()
+        lines = structure_file.readlines()
+        for line in lines:
+            attribute_num += int(line.split(',')[1])
     
-    rf = RF(port_input.get(), baud_input.get(), telem_string=struct_string)
+    rf = RF(port_input.get(), baud_input.get(), telem_string=struct_string, telem_attibute_num=attribute_num)
 
     #==================Logging and Graphic Processes==================#
 
@@ -170,7 +198,7 @@ def main():
             data_file.write(x + ",")
         data_file.write("\n")
 
-    telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue, os.path.join(directory, Path('./data.csv'))))
+    telem_process = Process(target=telem_frame_handler, args=(rf.telem_frame_queue, rf.current_telem_frame, os.path.join(directory, Path('./data.csv'))))
     telem_process.start()
 
     log_process = Process(target=log_handler, args=(rf.log_queue, os.path.join(directory, Path('./output.log'))))

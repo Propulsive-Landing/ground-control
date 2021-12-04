@@ -1,10 +1,4 @@
 [0]flash started
-[0]transferring data to SD card...
-[0]SD transfer started
-run_6_data.csv
-[510]File writing complete; code: 1 erase_flash: 1
-[0]Erasing flash...
-[0]SD transfer done
 [0]telemetry initialized
 [0]program start
 [0]SPI, I2C, RF communication pins set
@@ -13,8 +7,8 @@ run_6_data.csv
 [0]TVC test completed
 [0]sensors initialized
 [0]timing set, starting PL_COUNTDOWN
-[2356]Entering PL_FIRE
-[3482]Entering IDLE
+[2361]Entering PL_FIRE
+[10972]Entering IDLE
 [0]SD transfer started
-run_7_data.csv
-[3482]File writing complete; code: 1 erase_flash: 1
+run_28_data.csv
+[10972]File writing complete; code: 1 erase_flash: 1

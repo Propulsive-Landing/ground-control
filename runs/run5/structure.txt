@@ -1,6 +1,8 @@
 native byte order, standard size, no alignment
 unsigned int (4B),1,magic_number
-double (8B),1,current_time
-double (8B),1,euler_raw_0_0
-double (8B),1,dt
+int (4B),1,mode
+float (4B),1,euler_x
+float (4B),1,euler_y
+float (4B),1,dt
+float (4B),1,dt_observer
 unsigned int (4B),1,footer

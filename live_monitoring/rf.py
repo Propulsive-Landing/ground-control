@@ -1,4 +1,4 @@
-from multiprocessing import Process, Queue
+from multiprocessing import Queue, Array
 
 import serial
 import tkinter as tk
@@ -9,7 +9,7 @@ from struct import *
 
 
 class RF():
-    def __init__(self, port, baud, backlog_threshold = 6000, telem_string='=IhL4d4l26d19d20dI'):
+    def __init__(self, port, baud, backlog_threshold = 6000, telem_string='=IiffffI', telem_attibute_num=7):
         self._comport = serial.Serial(port, baud)
         self._backlog_bytes_num = backlog_threshold #how many bytes to be in list for a backlog
 
@@ -27,6 +27,8 @@ class RF():
 
         self.telem_frame_queue = Queue()
         self.log_queue = Queue()
+
+        self.current_telem_frame = Array("d", telem_attibute_num)
 
     def close(self):
         self._comport.close()
@@ -85,6 +87,7 @@ class RF():
                     self.handle_telem_error("invalid frame", frame)
                 else:
                     self.telem_frame_queue.put(frame)
+                    self.current_telem_frame[:] = frame
                     
 
             if(self._bytes_received[0:4] == self._STRING_HEADER and len(self._bytes_received) >= 9):
