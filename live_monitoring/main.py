@@ -29,31 +29,31 @@ def telem_frame_handler(queue, current_val, path):
 
 
     #============Text Output========#    
-    import tkinter as tk
-    window = tk.Tk()
-    window.title("DATA")
-    window.geometry("200x200")
-    window.after(1, lambda: window.focus_force())
+    # import tkinter as tk
+    # window = tk.Tk()
+    # window.title("DATA")
+    # window.geometry("200x200")
+    # window.after(1, lambda: window.focus_force())
 
-    x_axis = tk.StringVar()
-    x_axis.set('0')
-    y_axis = tk.StringVar()
-    y_axis.set('0')
+    # x_axis = tk.StringVar()
+    # x_axis.set('0')
+    # y_axis = tk.StringVar()
+    # y_axis.set('0')
 
-    x = tk.Entry(window, textvariable=x_axis)
-    x_label = tk.Label(window, text="X: ")
-    x_label.pack()
-    x.pack()
+    # x = tk.Entry(window, textvariable=x_axis)
+    # x_label = tk.Label(window, text="X: ")
+    # x_label.pack()
+    # x.pack()
 
-    y = tk.Entry(window, textvariable=y_axis)
-    y.pack()
+    # y = tk.Entry(window, textvariable=y_axis)
+    # y.pack()
 
     #=========Graph Output===========#
-    # # import matplotlib.pyplot as plt
-    # plt.ion()
-    # plt.show()
-    #xArr = []
-    #yArr = []
+    import matplotlib.pyplot as plt
+    plt.ion()
+    plt.show()
+    xArr = []
+    yArr = []
 
     #=========File Intiialization====#
     file = open(path, 'a')
@@ -72,17 +72,16 @@ def telem_frame_handler(queue, current_val, path):
 
         try:
             #=========Text Output=========#
-            x_axis.set((180/math.pi)*current_val[2])
-            y_axis.set((180/math.pi)*current_val[3])
-            window.update()
+            # x_axis.set((180/math.pi)*current_val[2])
+            # y_axis.set((180/math.pi)*current_val[3])
+            # window.update()
 
             #=========Graph Output=========#
-            # xArr.append(float(message[1]))
-            # yArr.append(float((message[3])))
-            # plt.clf()
-            # plt.plot(yArr[-40:])
-            # plt.draw()
-            # plt.pause(0.00001)
+            yArr.append(float((current_val[2])))
+            plt.clf()
+            plt.plot(yArr[-40:])
+            plt.draw()
+            plt.pause(0.00001)
         except ValueError:
             pass
         except IndexError:
@@ -91,7 +90,7 @@ def telem_frame_handler(queue, current_val, path):
 
     # plt.close()
     file.close()
-    window.destroy()
+    # window.destroy()
     print("END Frame handling")
 
 
