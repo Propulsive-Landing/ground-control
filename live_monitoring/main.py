@@ -49,11 +49,30 @@ def telem_frame_handler(queue, current_val, path):
     # y.pack()
 
     #=========Graph Output===========#
-    import matplotlib.pyplot as plt
-    plt.ion()
-    plt.show()
-    xArr = []
-    yArr = []
+    # import matplotlib.pyplot as plt
+    # plt.ion()
+    # plt.show()
+    # xArr = []
+    # yArr = []
+
+    #==============3D Output=========#
+    from vpython import cylinder, vector, arrow, color, rate
+    import math
+
+    xArrow = arrow(axis=vector(1,0,0), length=10, color=color.red, shaftwidth=.2)
+    yArrow = arrow(axis=vector(0,1,0), length=10, color=color.green, shaftwidth=.2)
+    zArrow = arrow(axis=vector(0,0,1), length=10, color=color.blue, shaftwidth=.2)
+
+
+    rocket = cylinder(length=12, pos=vector(0, 1, 0), width=1.5, height=1.5)
+    rocket.rotate(axis=vector(0,0,1), angle=math.pi/2)
+
+    def set_angle(yaw, pitch):
+        x = 10*math.cos(yaw)*math.cos(pitch)
+        y = 10*math.sin(yaw)*math.cos(pitch)
+        z = 10*math.sin(pitch)
+        rocket.axis = vector(x, y, z)
+        rocket.rotate(angle=math.pi/2, axis=vector(0,0,1))
 
     #=========File Intiialization====#
     file = open(path, 'a')
@@ -71,17 +90,21 @@ def telem_frame_handler(queue, current_val, path):
         file.write('\n')
 
         try:
+            #=========3D Output===========#
+            rate(10000)
+            set_angle(float(current_val[2]), float(current_val[3]))
+
             #=========Text Output=========#
             # x_axis.set((180/math.pi)*current_val[2])
             # y_axis.set((180/math.pi)*current_val[3])
             # window.update()
 
             #=========Graph Output=========#
-            yArr.append(float((current_val[2])))
-            plt.clf()
-            plt.plot(yArr[-40:])
-            plt.draw()
-            plt.pause(0.00001)
+            # yArr.append(float((current_val[2])))
+            # plt.clf()
+            # plt.plot(yArr[-40:])
+            # plt.draw()
+            # plt.pause(0.00001)
         except ValueError:
             pass
         except IndexError:
