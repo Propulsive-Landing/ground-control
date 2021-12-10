@@ -6,7 +6,6 @@ from tkinter import filedialog
 from multiprocessing import Process, cpu_count
 
 import os
-import math
 from pathlib import Path
 from shutil import copyfile
 
