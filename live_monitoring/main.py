@@ -29,24 +29,24 @@ def telem_frame_handler(queue, current_val, path):
 
 
     #============Text Output========#    
-    # import tkinter as tk
-    # window = tk.Tk()
-    # window.title("DATA")
-    # window.geometry("200x200")
-    # window.after(1, lambda: window.focus_force())
+    import tkinter as tk
+    window = tk.Tk()
+    window.title("DATA")
+    window.geometry("200x200")
+    window.after(1, lambda: window.focus_force())
 
-    # x_axis = tk.StringVar()
-    # x_axis.set('0')
-    # y_axis = tk.StringVar()
-    # y_axis.set('0')
+    x_axis = tk.StringVar()
+    x_axis.set('0')
+    y_axis = tk.StringVar()
+    y_axis.set('0')
 
-    # x = tk.Entry(window, textvariable=x_axis)
-    # x_label = tk.Label(window, text="X: ")
-    # x_label.pack()
-    # x.pack()
+    x = tk.Entry(window, textvariable=x_axis)
+    x_label = tk.Label(window, text="X: ")
+    x_label.pack()
+    x.pack()
 
-    # y = tk.Entry(window, textvariable=y_axis)
-    # y.pack()
+    y = tk.Entry(window, textvariable=y_axis)
+    y.pack()
 
     #=========Graph Output===========#
     # import matplotlib.pyplot as plt
@@ -56,7 +56,7 @@ def telem_frame_handler(queue, current_val, path):
     # yArr = []
 
     #==============3D Output=========#
-    from vpython import cylinder, vector, arrow, color, rate
+    from vpython import cylinder, vector, arrow, color, rate, no_notebook
     import math
 
     xArrow = arrow(axis=vector(1,0,0), length=10, color=color.red, shaftwidth=.2)
@@ -95,9 +95,9 @@ def telem_frame_handler(queue, current_val, path):
             set_angle(float(current_val[2]), float(current_val[3]))
 
             #=========Text Output=========#
-            # x_axis.set((180/math.pi)*current_val[2])
-            # y_axis.set((180/math.pi)*current_val[3])
-            # window.update()
+            x_axis.set((180/math.pi)*current_val[2])
+            y_axis.set((180/math.pi)*current_val[3])
+            window.update()
 
             #=========Graph Output=========#
             # yArr.append(float((current_val[2])))
@@ -113,7 +113,9 @@ def telem_frame_handler(queue, current_val, path):
 
     # plt.close()
     file.close()
-    # window.destroy()
+    window.destroy()
+    no_notebook.__server.shutdown()
+    no_notebook.__interact_loop.stop()
     print("END Frame handling")
 
 
