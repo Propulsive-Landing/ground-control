@@ -4,12 +4,6 @@ import serial
 import tkinter as tk
 from struct import *
 
-def _listen_loop(port: str, baud: int, running: Value, current_value: Array, telem_frame_queue: Queue, log_queue, backlog_threshold = 6000, telem_string='=IiffffI'):
-    rf = RF(port, baud, current_value, telem_frame_queue, log_queue, backlog_threshold, telem_string)
-    
-    while(running.value == 1):
-        rf.read_binary()
-
 
 
 
@@ -33,9 +27,12 @@ class RF():
         self._telem_frame_queue = telem_frame_queue
         self._log_queue = log_queue
 
-    @staticmethod
-    def listen_on_rf(port: str, baud: int, running: Value, current_value: Array, telem_frame_queue: Queue, log_queue, backlog_threshold = 6000, telem_string='=IiffffI'):
-        process = Process(target=_listen_loop, args=(port, baud, running, current_value, telem_frame_queue, log_queue, backlog_threshold, telem_string))
+    def _listen_loop(self, running: Value):
+        while(running.value == 1):
+            self.read_binary()
+
+    def listen_on_rf(self, running: Value):  
+        process = Process(target=self._listen_loop, args=(running,))
         process.start()
 
     def handle_alignment_notice(self, bytes_skipped):
@@ -114,3 +111,4 @@ class RF():
 
     def is_open(self):
         return self._comport.isOpen()
+

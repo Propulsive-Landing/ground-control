@@ -17,8 +17,8 @@ class MyWidget(QtWidgets.QWidget):
         self._data = { 'current_frame': Array('d', 7), 'log_queue' : Queue(), 'frame_queue': Queue()}
         self.looping_for_data = Value('i', 1)
 
-        RF.listen_on_rf('COM11', 9600, self.looping_for_data, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], backlog_threshold = 6000, telem_string='=IiffffI')
-
+        rf = RF('COM11', 9600, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], backlog_threshold = 6000, telem_string='=IiffffI')
+        rf.listen_on_rf(self.looping_for_data)
 
 
 if __name__ == "__main__":
