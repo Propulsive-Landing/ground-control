@@ -1,7 +1,10 @@
 import sys
-import random
 from PySide6 import QtCore, QtWidgets, QtGui
 import pyqtgraph as pg
+import numpy as np
+from multiprocessing import Value, Array, Queue
+
+from rf import RF
 
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
 
@@ -9,27 +12,14 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.hello = ["Hallo Welt", "Hei maailma", "Hola Mundo", "Привет мир"]
-
-        self.button = QtWidgets.QPushButton("CLICK ME!")
-        self.text = QtWidgets.QLabel("HELLO", alignment=QtCore.Qt.AlignCenter)
-
-        self.graph = pg.PlotWidget()
-
         self.layout = QtWidgets.QVBoxLayout(self)
-        self.layout.addWidget(self.graph)
-        self.layout.addWidget(self.text)
-        self.layout.addWidget(self.button)
 
-        hour = [1,2,3,4,5,6,7,8,9,10]
-        temperature = [30,32,34,32,33,31,29,32,35,45]
-        self.graph.plot(hour, temperature)
+        self._data = { 'current_frame': Array('d', 7), 'log_queue' : Queue(), 'frame_queue': Queue()}
+        self.looping_for_data = Value('i', 1)
 
-        self.button.clicked.connect(self.magic)
+        RF.listen_on_rf('COM11', 9600, self.looping_for_data, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], backlog_threshold = 6000, telem_string='=IiffffI')
 
-    @QtCore.Slot()
-    def magic(self):
-        self.text.setText(random.choice(self.hello))
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
