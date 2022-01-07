@@ -1,31 +1,113 @@
+from collections import namedtuple
 import sys
-from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
-import numpy as np
+import struct
 from multiprocessing import Value, Array, Queue
+from recordclass import recordclass
 
+from threading_logs import telem_frame_handler, log_handler
 from rf import RF
 
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
+
 
 class MyWidget(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        self.layout = QtWidgets.QVBoxLayout(self)
+        self.layout = QtWidgets.QGridLayout(self)
 
-        self._data = { 'current_frame': Array('d', 7), 'log_queue' : Queue(), 'frame_queue': Queue()}
-        self.looping_for_data = Value('i', 1)
+        telem_frame_string = '=IiffffI'
+        telem_attribute_num = len(struct.unpack(telem_frame_string,bytearray(struct.calcsize(telem_frame_string)*[0])))
 
-        rf = RF('COM11', 9600, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], backlog_threshold = 6000, telem_string='=IiffffI')
-        rf.listen_on_rf(self.looping_for_data)
+        self._data = {
+            'current_frame': Array('d', telem_attribute_num), #Most recent data frame received
+            'log_queue' : Queue(), #queue of all logs
+            'frame_queue': Queue() #queue of all data frames received
+        }
+        self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
+
+        self.rf = RF(self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], backlog_threshold = 6000, telem_string='=IiffffI')
+        self.graph_widget_data = recordclass('Graph_Widget', 'item_num widget x y line')
+
+        self._thread_pool = QtCore.QThreadPool.globalInstance()
+        self.log_path = ''
+        self.data_path = ''
+
+        self.init_widgets()
+
+    def init_widgets(self):
+        # Setup Euler_X graph
+        self.euler_x = self._initialize_graph_data(20)
+        self.layout.addWidget(self.euler_x.widget, 0, 0)
+
+        # Setup Euler_Y graph
+        self.euler_y = self._initialize_graph_data(20)
+        self.layout.addWidget(self.euler_y.widget, 0, 1)
+
+        #port input
+        self.port_input = QtWidgets.QLineEdit()
+        self.port_input.setText("COM11")
+        self.layout.addWidget(self.port_input, 1, 0)
+
+        #connect button
+        self.connect_serial_button = QtWidgets.QPushButton("Connect Serial and Listen")
+        self.layout.addWidget(self.connect_serial_button, 2, 0)
+        self.connect_serial_button.clicked.connect(self.connect_and_listen)
+
+        #stop and save button
+        self.stop_listening_and_save_button = QtWidgets.QPushButton("Stop Listening and Save")
+        self.layout.addWidget(self.stop_listening_and_save_button, 3, 0)
+        self.stop_listening_and_save_button.clicked.connect(self.stop_and_save)
+        self.stop_listening_and_save_button.setEnabled(False)
+
+        #Text view
+        self.console = QtWidgets.QTextBrowser()
+        self.layout.addWidget(self.console, 1, 1, 3, 1)
+
+        self._start_animation_timer()
+
+    def connect_and_listen(self):
+        if(not self.rf.connect_serial(self.port_input.text(), 9600)):
+            print("INVALID SERIAL PORT")
+            return
+
+        self._thread_pool.start(log_handler(self.log_path, self.console, self._data['log_queue']))
+        self._thread_pool.start(telem_frame_handler(self.data_path, self._data['telem_frame_queue']))
+        self.stop_listening_and_save_button.setEnabled(True)
+
+        self.rf.start_listen_loop()
+    
+    def stop_and_save(self):
+        self._data['log_queue'].put('STOP')
+        self._data['frame_queue'].put('STOP')
+
+    
+    def _update_plot_data(self):
+        self.euler_x.y = self.euler_x.y[1:]
+        self.euler_x.y.append(self._data['current_frame'][2])
+        self.euler_x.line.setData(self.euler_x.x, self.euler_x.y)
+
+    def _start_animation_timer(self):
+        self.animation_timer = QtCore.QTimer()
+        self.animation_timer.setInterval(100)
+        self.animation_timer.timeout.connect(self._update_plot_data)
+        self.animation_timer.start()
+
+    def _initialize_graph_data(self, item_num):
+        data = self.graph_widget_data(item_num=item_num, widget=pg.PlotWidget(), x=None, y=None, line=None)
+        data.x = list(range(0,item_num))
+        data.y = [0]*item_num
+        data.line = data.widget.plot(data.x, data.y)
+        return data
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
     widget = MyWidget()
-    widget.resize(800, 600)
+    widget.resize(800, 300)
     widget.show()
 
     sys.exit(app.exec())
