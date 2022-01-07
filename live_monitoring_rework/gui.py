@@ -16,6 +16,8 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
 
+        self.setWindowTitle("AIAA PL Ground Control")
+
         self.layout = QtWidgets.QGridLayout(self)
 
         telem_frame_string = '=IiffffI'
@@ -32,10 +34,13 @@ class MyWidget(QtWidgets.QWidget):
         self.graph_widget_data = recordclass('Graph_Widget', 'item_num widget x y line')
 
         self._thread_pool = QtCore.QThreadPool.globalInstance()
-        self.log_path = ''
-        self.data_path = ''
+        self.log_path = 'a'
+        self.data_path = 'b'
 
         self.init_widgets()
+
+    def closeEvent(self, event):
+        self.stop_and_save()
 
     def init_widgets(self):
         # Setup Euler_X graph
@@ -73,15 +78,17 @@ class MyWidget(QtWidgets.QWidget):
             print("INVALID SERIAL PORT")
             return
 
-        self._thread_pool.start(log_handler(self.log_path, self.console, self._data['log_queue']))
-        self._thread_pool.start(telem_frame_handler(self.data_path, self._data['telem_frame_queue']))
-        self.stop_listening_and_save_button.setEnabled(True)
-
         self.rf.start_listen_loop()
+        self.looping_for_data.value = 1
+
+        self._thread_pool.start(log_handler(self.log_path, self.console, self._data['log_queue']))
+        self._thread_pool.start(telem_frame_handler(self.data_path, self.console, self._data['frame_queue']))
+        self.stop_listening_and_save_button.setEnabled(True)
     
     def stop_and_save(self):
         self._data['log_queue'].put('STOP')
         self._data['frame_queue'].put('STOP')
+        self.looping_for_data.value = 0
 
     
     def _update_plot_data(self):

@@ -23,13 +23,14 @@ class log_handler(QtCore.QRunnable):
         self.text_box.append('End Logging, Saved')
 
 class telem_frame_handler(QtCore.QRunnable):
-    def __init__(self, path : str, frame_queue: Queue):
+    def __init__(self, path : str, text_box : QtWidgets.QTextBrowser, frame_queue: Queue):
         super().__init__()
         self.path = path
+        self.text_box = text_box
         self.frame_queue = frame_queue
 
     def run(self):
-        self.text_box.append('Start logging')
+        self.text_box.append('Start data logging')
         with open(self.path, 'w') as file:
             while(True):
                 message = self.frame_queue.get()
@@ -38,4 +39,4 @@ class telem_frame_handler(QtCore.QRunnable):
         
                 file.write(','.join(map(str,chain.from_iterable(message))))    
 
-        self.text_box.append('End Logging, Saved')
+        self.text_box.append('End data logging, Saved')
