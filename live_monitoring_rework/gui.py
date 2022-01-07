@@ -12,7 +12,7 @@ from rf import RF
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
 
 
-class MyWidget(QtWidgets.QWidget):
+class GroundControlWindow(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
 
@@ -113,8 +113,8 @@ class MyWidget(QtWidgets.QWidget):
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
-    widget = MyWidget()
-    widget.resize(800, 300)
-    widget.show()
+    window = GroundControlWindow()
+    window.resize(800, 300)
+    window.show()
 
     sys.exit(app.exec())
