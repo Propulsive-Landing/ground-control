@@ -1,4 +1,3 @@
-from collections import namedtuple
 import sys
 from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
@@ -8,6 +7,7 @@ from recordclass import recordclass
 
 from threading_logs import telem_frame_handler, log_handler
 from rf import RF
+from file_management_widget import file_management_widget
 
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
 
@@ -39,6 +39,9 @@ class GroundControlWindow(QtWidgets.QWidget):
 
         self.init_widgets()
 
+    def output(self, text):
+        self.console.append(text)
+
     def closeEvent(self, event):
         self.stop_and_save()
 
@@ -51,35 +54,40 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.euler_y = self._initialize_graph_data(20)
         self.layout.addWidget(self.euler_y.widget, 0, 1)
 
+        #File input
+
+        self.file_management_panel = file_management_widget(self.output)
+        self.layout.addWidget(self.file_management_panel, 1, 0)
+
         #port input
         self.port_input = QtWidgets.QLineEdit()
-        self.port_input.setText("COM11")
-        self.layout.addWidget(self.port_input, 1, 0)
+        self.port_input.setPlaceholderText("Enter Port")
+        self.layout.addWidget(self.port_input, 2, 0)
 
         #connect button
         self.connect_serial_button = QtWidgets.QPushButton("Connect Serial and Listen")
-        self.layout.addWidget(self.connect_serial_button, 2, 0)
+        self.layout.addWidget(self.connect_serial_button, 3, 0)
         self.connect_serial_button.clicked.connect(self.connect_and_listen)
 
         #stop and save button
         self.stop_listening_and_save_button = QtWidgets.QPushButton("Stop Listening and Save")
-        self.layout.addWidget(self.stop_listening_and_save_button, 3, 0)
+        self.layout.addWidget(self.stop_listening_and_save_button, 4, 0)
         self.stop_listening_and_save_button.clicked.connect(self.stop_and_save)
         self.stop_listening_and_save_button.setEnabled(False)
 
         #Text view
         self.console = QtWidgets.QTextBrowser()
-        self.layout.addWidget(self.console, 1, 1, 3, 1)
+        self.layout.addWidget(self.console, 1, 1, 4, 1)
 
         self._start_animation_timer()
 
     def connect_and_listen(self):
         if(not self.rf.connect_serial(self.port_input.text(), 9600)):
-            print("INVALID SERIAL PORT")
+            self.output("Invalid Serial Port")
             return
 
-        self.rf.start_listen_loop()
         self.looping_for_data.value = 1
+        self.rf.start_listen_loop()
 
         self._thread_pool.start(log_handler(self.log_path, self.console, self._data['log_queue']))
         self._thread_pool.start(telem_frame_handler(self.data_path, self.console, self._data['frame_queue']))
