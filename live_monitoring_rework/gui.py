@@ -3,7 +3,6 @@ from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
 import struct
 from multiprocessing import Value, Array, Queue
-from recordclass import recordclass
 
 from threading_logs import telem_frame_handler, log_handler
 from rf import RF
@@ -30,14 +29,13 @@ class GroundControlWindow(QtWidgets.QWidget):
         }
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
-        self.rf = RF(self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], backlog_threshold = 6000, telem_string='=IiffffI')
-        self.graph_widget_data = recordclass('Graph_Widget', 'item_num widget x y line')
+        self.rf = RF(self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'])
 
         self._thread_pool = QtCore.QThreadPool.globalInstance()
-        self.log_path = 'a'
-        self.data_path = 'b'
+
 
         self.init_widgets()
+        self.setup_graphs()
 
     def output(self, text):
         self.console.append(text)
@@ -46,16 +44,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.stop_and_save()
 
     def init_widgets(self):
-        # Setup Euler_X graph
-        self.euler_x = self._initialize_graph_data(20)
-        self.layout.addWidget(self.euler_x.widget, 0, 0)
-
-        # Setup Euler_Y graph
-        self.euler_y = self._initialize_graph_data(20)
-        self.layout.addWidget(self.euler_y.widget, 0, 1)
-
         #File input
-
         self.file_management_panel = file_management_widget(self.output)
         self.layout.addWidget(self.file_management_panel, 1, 0)
 
@@ -79,12 +68,18 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.console = QtWidgets.QTextBrowser()
         self.layout.addWidget(self.console, 1, 1, 4, 1)
 
-        self._start_animation_timer()
+
 
     def connect_and_listen(self):
+        if(not self.file_management_panel.check_ready()):
+            return
+
         if(not self.rf.connect_serial(self.port_input.text(), 9600)):
             self.output("Invalid Serial Port")
             return
+
+        self.data_path, self.log_path = self.file_management_panel.create_files()
+        self.rf._telem_struct_unpacking_values['telem_struct_string'] = self.file_management_panel.struct_string
 
         self.looping_for_data.value = 1
         self.rf.start_listen_loop()
@@ -98,24 +93,17 @@ class GroundControlWindow(QtWidgets.QWidget):
         self._data['frame_queue'].put('STOP')
         self.looping_for_data.value = 0
 
+    def setup_graphs(self):
+        pass
     
     def _update_plot_data(self):
-        self.euler_x.y = self.euler_x.y[1:]
-        self.euler_x.y.append(self._data['current_frame'][2])
-        self.euler_x.line.setData(self.euler_x.x, self.euler_x.y)
+        pass
 
     def _start_animation_timer(self):
         self.animation_timer = QtCore.QTimer()
         self.animation_timer.setInterval(100)
         self.animation_timer.timeout.connect(self._update_plot_data)
         self.animation_timer.start()
-
-    def _initialize_graph_data(self, item_num):
-        data = self.graph_widget_data(item_num=item_num, widget=pg.PlotWidget(), x=None, y=None, line=None)
-        data.x = list(range(0,item_num))
-        data.y = [0]*item_num
-        data.line = data.widget.plot(data.x, data.y)
-        return data
 
 
 if __name__ == "__main__":

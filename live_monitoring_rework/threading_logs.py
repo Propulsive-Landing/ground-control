@@ -11,7 +11,7 @@ class log_handler(QtCore.QRunnable):
 
     def run(self):
         self.text_box.append('Start logging')
-        with open(self.path, 'w') as file:
+        with open(self.path, 'a') as file:
             while(True):
                 message = self.log_queue.get()
                 if(message == 'STOP'):
@@ -31,7 +31,7 @@ class telem_frame_handler(QtCore.QRunnable):
 
     def run(self):
         self.text_box.append('Start data logging')
-        with open(self.path, 'w') as file:
+        with open(self.path, 'a') as file:
             while(True):
                 message = self.frame_queue.get()
                 if(message == 'STOP'):

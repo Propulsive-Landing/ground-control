@@ -1,6 +1,6 @@
-import struct
 from PySide6 import QtCore, QtWidgets
 from pathlib import Path
+from os import mkdir
 
 
 class file_management_widget(QtWidgets.QWidget):
@@ -15,10 +15,10 @@ class file_management_widget(QtWidgets.QWidget):
         self.layout.addRow(select_struct_button, self.manual_struct_string)
 
         select_output_directory_button = QtWidgets.QPushButton("Select Output Directory")
-        show_output_directory = QtWidgets.QLineEdit()
-        show_output_directory.setEnabled(False)
+        self.show_output_directory = QtWidgets.QLineEdit()
+        self.show_output_directory.setReadOnly(True)
 
-        self.layout.addRow(select_output_directory_button, show_output_directory)
+        self.layout.addRow(select_output_directory_button, self.show_output_directory)
         
         self.output = output
 
@@ -27,18 +27,45 @@ class file_management_widget(QtWidgets.QWidget):
         self.output_location = None
         self.header = None
 
-        self.ready = False
+        self.manual_struct_string.textEdited.connect(self._update_struct_string)
+        select_struct_button.clicked.connect(self._get_struct)
+        select_output_directory_button.clicked.connect(self._get_output_location)
 
-        self.manual_struct_string.textEdited.connect(self.update_struct_string)
-        select_struct_button.clicked.connect(self.get_struct)
+    def _get_output_location(self):
+        output_directory = Path(QtWidgets.QFileDialog.getExistingDirectory(self, "Choose Output Location"))
 
-    def get_struct(self):
+        if(not output_directory):
+            return
+            
+        temp_location = output_directory.joinpath('./run0')
+        index = 1
+
+        while(temp_location.exists()):
+            temp_location = output_directory.joinpath('./run'+str(index))
+            index += 1
+        
+        self.output_location = temp_location
+        self.show_output_directory.setText(str(self.output_location))
+
+    def _get_struct(self):
         struct_directory = Path(QtWidgets.QFileDialog.getExistingDirectory(self, "Choose Directory with Struct Defintion"))
         structure_file = struct_directory.joinpath('./structure.txt')
         struct_string_file = struct_directory.joinpath('./struct_string.txt')
 
-        if(not structure_file.is_file()):
-            pass
+        if(structure_file.is_file()):
+            temp_header = ''
+            with open(structure_file) as file:
+                try:
+                    file.readline()
+                    for line in file.readlines():
+                        line = line.strip()
+                        if(line):
+                            temp_header += line.split(',')[2] + ','
+                except:
+                    print("ERR")
+            self.header = temp_header
+
+
         if(not struct_string_file.is_file()):
             self.output("No structure defintion in directory")
             return
@@ -48,20 +75,34 @@ class file_management_widget(QtWidgets.QWidget):
         
         self.manual_struct_string.setText(self.struct_string)
 
-    def update_struct_string(self):
+    def _update_struct_string(self):
         self.struct_string = self.manual_struct_string.text()
+
+    def create_files(self):
+        mkdir(self.output_location)
+
+        data_path = self.output_location.joinpath('./data.csv')
+        log_path = self.output_location.joinpath('./output.log')
+
+        with open(data_path, 'w') as file:
+            if(self.header):
+                file.write(self.header)
+
+        return data_path, log_path
 
     def check_ready(self):
         if(not (self.struct_string and self.output_location)):
             self.output('Error: Struct String and Output Location must be set')
             return False
-        if(not (self.struct_string)):
+        if(not self.struct_string):
             self.output('Error: Must set Struct String')
             return False
         elif(not self.output_location):
             self.output('Error: Must set Output Location')
             return False
 
-        
+        return True
+
+    
 
     

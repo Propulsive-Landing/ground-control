@@ -74,7 +74,7 @@ class RF():
                 while(len(self._bytes_received) >= 4 and (self._bytes_received[0:4] != self._transmittion_constants['TELEM_HEADER'] and self._bytes_received[0:4] != self._transmittion_constants['STRING_HEADER'])): #removes from the front of the struct until a head is found
                     self._bytes_received.pop(0)
                     iterations += 1
-                stra += f'{iterations} byes'
+                stra += f'{iterations} bytes'
                 self._log_queue.put(stra)
 
             if(len(self._bytes_received) < 4):
