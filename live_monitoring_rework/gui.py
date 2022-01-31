@@ -1,3 +1,4 @@
+import random
 import sys
 from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
@@ -7,6 +8,7 @@ from multiprocessing import Value, Array, Queue
 from threading_logs import telem_frame_handler, log_handler
 from rf import RF
 from file_management_widget import file_management_widget
+from custom_graph_widget import custom_graph_widget
 
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
 
@@ -14,26 +16,9 @@ from file_management_widget import file_management_widget
 class GroundControlWindow(QtWidgets.QWidget):
     def __init__(self) -> None:
         super().__init__()
-
         self.setWindowTitle("AIAA PL Ground Control")
-
         self.layout = QtWidgets.QGridLayout(self)
-
-        telem_frame_string = '=IiffffI'
-        telem_attribute_num = len(struct.unpack(telem_frame_string,bytearray(struct.calcsize(telem_frame_string)*[0])))
-
-        self._data = {
-            'current_frame': Array('d', telem_attribute_num), #Most recent data frame received
-            'log_queue' : Queue(), #queue of all logs
-            'frame_queue': Queue() #queue of all data frames received
-        }
-        self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
-
-        self.rf = RF(self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'])
-
         self._thread_pool = QtCore.QThreadPool.globalInstance()
-
-
         self.init_widgets()
         self.setup_graphs()
 
@@ -74,43 +59,77 @@ class GroundControlWindow(QtWidgets.QWidget):
         if(not self.file_management_panel.check_ready()):
             return
 
+        self.initialize_rf()
+
+
         if(not self.rf.connect_serial(self.port_input.text(), 9600)):
             self.output("Invalid Serial Port")
             return
-
+            
+        self._start_animation_timer()
+            
         self.data_path, self.log_path = self.file_management_panel.create_files()
         self.rf._telem_struct_unpacking_values['telem_struct_string'] = self.file_management_panel.struct_string
 
         self.looping_for_data.value = 1
-        self.rf.start_listen_loop()
+        self.rf.start_listen_loop(self.looping_for_data)
 
         self._thread_pool.start(log_handler(self.log_path, self.console, self._data['log_queue']))
         self._thread_pool.start(telem_frame_handler(self.data_path, self.console, self._data['frame_queue']))
         self.stop_listening_and_save_button.setEnabled(True)
     
+    def initialize_rf(self):
+        telem_frame_string = self.file_management_panel.struct_string
+        telem_attribute_num = len(struct.unpack(telem_frame_string,bytearray(struct.calcsize(telem_frame_string)*[0])))
+
+        self._data = {
+            'current_frame': Array('d', telem_attribute_num), #Most recent data frame received
+            'log_queue' : Queue(), #queue of all logs
+            'frame_queue': Queue() #queue of all data frames received
+        }
+        self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
+
+        self.rf = RF(self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'])
+
+        self.eulers.setup_connection(self._data['current_frame'])
+        self.velocities.setup_connection(self._data['current_frame'])
+
     def stop_and_save(self):
         self._data['log_queue'].put('STOP')
         self._data['frame_queue'].put('STOP')
         self.looping_for_data.value = 0
 
+        self.stop_listening_and_save_button.setEnabled(False)
+        self.eulers.show_history()
+        self.velocities.show_history()
+
+        self.animation_timer.stop()
+
     def setup_graphs(self):
-        pass
+        self.eulers = custom_graph_widget((5, 6, 7))
+        self.velocities = custom_graph_widget((2, 3, 4))
+
+        self.layout.addWidget(self.eulers, 0, 0)
+        self.layout.addWidget(self.velocities, 0, 1)
+        
     
     def _update_plot_data(self):
-        pass
+        self.eulers.update_lines()
+        self.velocities.update_lines()
 
     def _start_animation_timer(self):
         self.animation_timer = QtCore.QTimer()
         self.animation_timer.setInterval(100)
         self.animation_timer.timeout.connect(self._update_plot_data)
         self.animation_timer.start()
+        
 
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
     window = GroundControlWindow()
-    window.resize(800, 300)
+    window.resize(800, 600)
     window.show()
 
     sys.exit(app.exec())

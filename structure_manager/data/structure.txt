@@ -1,9 +1,10 @@
 native byte order, standard size, no alignment
 unsigned int (4B),1,magic_number
 unsigned short (2B),1,mode
-float (4B),1,euler_x
-float (4B),1,euler_y
-float (4B),2,currernt_u
+float (4B),3,velocity
+float (4B),3,euler
 float (4B),1,dt
-float (4B),1,dt_observer
+float (4B),2,voltages
+float (4B),2,current_u
+float (4B),2,servo_u
 unsigned int (4B),1,footer
