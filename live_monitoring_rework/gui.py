@@ -55,7 +55,7 @@ class GroundControlWindow(QtWidgets.QWidget):
 
         #Text view
         self.console = QtWidgets.QTextBrowser()
-        self.layout.addWidget(self.console, 1, 1, 4, 1)
+        self.layout.addWidget(self.console, 1, 1, 4, 1) 
 
 
 
@@ -93,7 +93,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         }
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
-        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'])
+        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], telem_string=telem_frame_string)
 
         self.eulers.setup_connection(self._data['current_frame'])
         self.velocities.setup_connection(self._data['current_frame'])
@@ -123,7 +123,7 @@ class GroundControlWindow(QtWidgets.QWidget):
 
     def _start_animation_timer(self):
         self.animation_timer = QtCore.QTimer()
-        self.animation_timer.setInterval(100)
+        self.animation_timer.setInterval(10)
         self.animation_timer.timeout.connect(self._update_plot_data)
         self.animation_timer.start()
         

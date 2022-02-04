@@ -25,6 +25,8 @@ class RF():
             'size_of_telem_struct': calcsize(telem_string)
         }
 
+        print("SIZE:", str(self._telem_struct_unpacking_values['size_of_telem_struct']))
+
         self._current_telem_frame = current_value
         self._telem_frame_queue = telem_frame_queue
         self._log_queue = log_queue
@@ -46,12 +48,16 @@ class RF():
 
     def _listen_loop(self, running: Value):
         self._comport = serial.Serial(self.port, self.baud)
+        self._comport.reset_input_buffer()
+
         while(running.value == 1):
             self.read_binary()
+        
+        self._comport.close()
 
     #Starts a separate process that will connect serial port then listen for data
     def start_listen_loop(self, running: Value):
-        process = Process(target=self._listen_loop, args=(running,))
+        process = Process(target=self._listen_loop, args=(running,), name="Data Search Loop")
         process.start()
 
     def handle_alignment_notice(self, bytes_skipped):

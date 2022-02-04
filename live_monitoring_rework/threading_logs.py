@@ -17,8 +17,9 @@ class log_handler(QtCore.QRunnable):
                 if(message == 'STOP'):
                     break
         
-                self.text_box.append(message)
-                file.write(message)    
+                file.write(str(message))
+
+                self.text_box.append(str(message))
 
         self.text_box.append('End Logging, Saved')
 
@@ -37,6 +38,8 @@ class telem_frame_handler(QtCore.QRunnable):
                 if(message == 'STOP'):
                     break
         
-                file.write(','.join(map(str,chain.from_iterable(message))))    
+                for x in message:
+                    file.write(str(x) + ",")
+                file.write('\n')
 
         self.text_box.append('End data logging, Saved')

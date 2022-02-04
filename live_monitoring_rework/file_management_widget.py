@@ -87,6 +87,7 @@ class file_management_widget(QtWidgets.QWidget):
         with open(data_path, 'w') as file:
             if(self.header):
                 file.write(self.header)
+                file.write('\n')
 
         return data_path, log_path
 

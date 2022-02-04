@@ -7,6 +7,8 @@ class custom_graph_widget(pg.PlotWidget):
         super().__init__()
         self.indexes = indexes
 
+        self.graphed_values_num = 100
+
         self.values = {}
 
     def setup_connection(self, current_frame):
@@ -19,7 +21,7 @@ class custom_graph_widget(pg.PlotWidget):
             self.values[index][0].append(self.values[index][0][-1]+1)
             self.values[index][1].append(self.current_frame[index])
 
-            self.values[index][2].setData(self.values[index][0][-20:], self.values[index][1][-20:])
+            self.values[index][2].setData(self.values[index][0][-self.graphed_values_num:], self.values[index][1][-self.graphed_values_num:])
 
     def show_history(self):
         for index in self.indexes:
