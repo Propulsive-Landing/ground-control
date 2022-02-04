@@ -1,3 +1,4 @@
+import multiprocessing
 import random
 import sys
 from PySide6 import QtCore, QtWidgets
@@ -5,12 +6,15 @@ import pyqtgraph as pg
 import struct
 from multiprocessing import Value, Array, Queue
 
+import gui_util
 from threading_logs import telem_frame_handler, log_handler
 from rf import RF
 from file_management_widget import file_management_widget
 from custom_graph_widget import custom_graph_widget
 
+
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
+
 
 
 class GroundControlWindow(QtWidgets.QWidget):
@@ -59,12 +63,11 @@ class GroundControlWindow(QtWidgets.QWidget):
         if(not self.file_management_panel.check_ready()):
             return
 
-        self.initialize_rf()
-
-
-        if(not self.rf.connect_serial(self.port_input.text(), 9600)):
+        if(not gui_util.serial_port_available(self.port_input.text())):
             self.output("Invalid Serial Port")
             return
+        
+        self.initialize_rf(self.port_input.text(), 9600)
             
         self._start_animation_timer()
             
@@ -78,7 +81,8 @@ class GroundControlWindow(QtWidgets.QWidget):
         self._thread_pool.start(telem_frame_handler(self.data_path, self.console, self._data['frame_queue']))
         self.stop_listening_and_save_button.setEnabled(True)
     
-    def initialize_rf(self):
+    #does not connect the port, just passses the info to the RF class so it can be used later
+    def initialize_rf(self, port : str, baud : int):
         telem_frame_string = self.file_management_panel.struct_string
         telem_attribute_num = len(struct.unpack(telem_frame_string,bytearray(struct.calcsize(telem_frame_string)*[0])))
 
@@ -89,7 +93,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         }
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
-        self.rf = RF(self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'])
+        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'])
 
         self.eulers.setup_connection(self._data['current_frame'])
         self.velocities.setup_connection(self._data['current_frame'])

@@ -5,7 +5,10 @@ from struct import *
 
 
 class RF():
-    def __init__(self, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, backlog_threshold = 6000, telem_string='=IiffffI'):
+    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, backlog_threshold = 6000, telem_string='=IiffffI'):
+
+        self.port = port
+        self.baud = baud
 
         self._bytes_received = [] #This list holds recieved bytes and this list is searched through to find packets
         self._history = []
@@ -34,14 +37,20 @@ class RF():
         except serial.SerialException:
             return False
 
+    def disconnect_serial(self):
+        try:
+            self._comport.close()
+            return True
+        except ValueError:
+            return False
+
     def _listen_loop(self, running: Value):
+        self._comport = serial.Serial(self.port, self.baud)
         while(running.value == 1):
             self.read_binary()
 
+    #Starts a separate process that will connect serial port then listen for data
     def start_listen_loop(self, running: Value):
-        if(not hasattr(self, '_comport')):
-            print("NOT CONNECTED")
-            return
         process = Process(target=self._listen_loop, args=(running,))
         process.start()
 

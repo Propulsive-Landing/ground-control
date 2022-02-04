@@ -90,6 +90,7 @@ class file_management_widget(QtWidgets.QWidget):
 
         return data_path, log_path
 
+    #Checks that data management values are valid
     def check_ready(self):
         if(not (self.struct_string and self.output_location)):
             self.output('Error: Struct String and Output Location must be set')
