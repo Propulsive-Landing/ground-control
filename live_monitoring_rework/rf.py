@@ -25,7 +25,6 @@ class RF():
             'size_of_telem_struct': calcsize(telem_string)
         }
 
-        print("SIZE:", str(self._telem_struct_unpacking_values['size_of_telem_struct']))
 
         self._current_telem_frame = current_value
         self._telem_frame_queue = telem_frame_queue
@@ -126,14 +125,3 @@ class RF():
                             self._log_queue.put(output_string)
                         except:
                             self._log_queue.put("Character value exceeds ascii values" + str(parsedString))
-
-
-    def arm(self):
-        self._comport.write(bytes('arm\n', 'utf8'))
-
-    def abort(self):
-        self._comport.write(bytes('abort\n', 'utf8'))
-
-    def is_open(self):
-        return self._comport.isOpen()
-

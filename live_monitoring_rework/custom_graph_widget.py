@@ -3,18 +3,22 @@ import pyqtgraph as pg
 from multiprocessing import Array
 
 class custom_graph_widget(pg.PlotWidget):
-    def __init__(self, indexes: tuple):
+    def __init__(self, indexes: tuple, names: tuple):
         super().__init__()
         self.indexes = indexes
+        self.names = names
 
         self.graphed_values_num = 100
 
         self.values = {}
 
     def setup_connection(self, current_frame):
+        self.plotItem.addLegend()
+        
         self.current_frame = current_frame
-        for index in self.indexes:
-            self.values[index] = ([0], [0], self.plot([0], [0]))
+        for count, index in enumerate(self.indexes):
+            self.values[index] = ([0], [0], self.plot([0], [0], pen=(count, len(self.indexes)), name=self.names[count]))
+        
         
     def update_lines(self):
         for index in self.indexes:

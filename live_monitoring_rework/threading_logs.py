@@ -18,6 +18,7 @@ class log_handler(QtCore.QRunnable):
                     break
         
                 file.write(str(message))
+                file.write('\n')
 
                 self.text_box.append(str(message))
 
