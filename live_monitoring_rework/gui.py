@@ -1,3 +1,4 @@
+from cmath import pi
 import multiprocessing
 import random
 import sys
@@ -112,6 +113,8 @@ class GroundControlWindow(QtWidgets.QWidget):
     def setup_graphs(self):
         self.eulers = custom_graph_widget((5, 6, 7), names=('euler_x', 'euler_y', 'euler_z'))
         self.velocities = custom_graph_widget((2, 3, 4), names=('velocity_x', 'velocity_y', 'velocity_z'))
+
+        self.eulers.setYRange(-pi, pi, padding=0)
 
         self.layout.addWidget(self.eulers, 0, 0)
         self.layout.addWidget(self.velocities, 0, 1)
