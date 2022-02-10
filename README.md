@@ -11,18 +11,23 @@ This repository contains scripts and resources to monitor and control the launch
 |--|--|
 |`live_monitoring`|Tools to communicate with rocket during a launch or test|
 |`runs`|Data from past launches or tests
-|`data_viewer`|Resources to analyze past data
 |`structure_manager`|Tools to synchronize ground control with rocket 
+
+## First Time Usage
+ 1. Install python3 from [python.org](https://www.python.org/downloads/)
+ 3. Run the command `python3 -m pip install PySide6 Pyqtgraph` to install dependencies
+ 4. You are now ready to go!
 
 ## Test / Launch Usage
 
- 1. Install python from [python.org](https://www.python.org/downloads/)
- 2. Navigate to the `live_monitoring` folder in your terminal
- 3. Run the command `python main.py` (A gui should appear)
- 4. Enter the XBee dongle port name into the GUI (e.g. "COM11")
- 5. Click the `Select Data Directory` button to select where you want the folder for the run to be generated.
- 6. Click the `start recording` button in the GUI
- 7. When the test/launch is complete, click `save and exit`
+ 1. Navigate to the `live_monitoring` folder in your terminal
+ 2. Run the command `python3 gui.py` (A gui should appear)
+ 3. Click the `Select Struct Defintion Directory` button to select where the incoming structure is defined. (It will almost always be in `./structure_manager/data` folder)
+ 4. Click the `Select Output Directory` to determine where the output folder will be generated.
+ 5. Enter the XBee dongle port name into the GUI (e.g. "COM11")
+ 6. Click `Connect Serial and Listen` to begin listening for data
+ 7. Click `Stop Listening and Save` to stop listening (cannot be resumed)
+ 8. Click `Reset and Save Graphs` when you are done looking at your graphs and want to begin another trial.
   
   ## Structure Synchronization
   
