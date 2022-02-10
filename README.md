@@ -10,7 +10,7 @@ This repository contains scripts and resources to monitor and control the launch
 |Folder|Contents|
 |--|--|
 |`live_monitoring`|Tools to communicate with rocket during a launch or test|
-|`runs`|Data from past launches or tests
+|`runs`|Data from past launches or tests (although test output can be directed anywhere)
 |`structure_manager`|Tools to synchronize ground control with rocket 
 
 ## First Time Usage
