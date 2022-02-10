@@ -1,17 +1,22 @@
-from multiprocessing import Queue, Array, Value, Process
+from multiprocessing import Queue, Array, Value, Process, Pipe
+from multiprocessing.connection import PipeConnection
+from threading import Thread
+from time import sleep
 
 import serial
 from struct import *
 
 
 class RF():
-    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, backlog_threshold = 6000, telem_string='=IiffffI'):
+    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, handled_most_recent : Value, backlog_threshold = 6000, telem_string='=IiffffI'):
 
         self.port = port
         self.baud = baud
 
         self._bytes_received = [] #This list holds recieved bytes and this list is searched through to find packets
         self._history = []
+
+        self._delay_between_packets = 5 #Delay (in ms) if there is not enough data in input buffer to be read into something meaningful
 
         self._transmittion_constants = {
             'TELEM_HEADER': [239, 190, 173, 222], #4 byte heaeder to indicate start of telem frame, 0xDEADBEEF
@@ -25,6 +30,9 @@ class RF():
             'size_of_telem_struct': calcsize(telem_string)
         }
 
+        self.input_receiver, self.input_transmitter = Pipe(duplex=False)
+
+        self.handled_most_recent = handled_most_recent
 
         self._current_telem_frame = current_value
         self._telem_frame_queue = telem_frame_queue
@@ -45,9 +53,17 @@ class RF():
         except ValueError:
             return False
 
+    def _write_loop(self, running, receiver : PipeConnection):
+        while(running.value == 1):
+            if(receiver.poll(timeout=1)):
+                val = receiver.recv()
+                self._comport.write(bytes(val))
+
     def _listen_loop(self, running: Value):
         self._comport = serial.Serial(self.port, self.baud)
         self._comport.reset_input_buffer()
+
+        self.write_thread = Thread(target=self._write_loop, args=(running,self.input_receiver))
 
         while(running.value == 1):
             self.read_binary()
@@ -65,7 +81,9 @@ class RF():
 
     #Should be called with high frequency to ensure propper readings
     def read_binary(self):
-        if(self._comport.in_waiting >= 5): #waits until there is data of at least the size of the struct because if there is not that much data, there cannot be a complete struct
+        if(self._comport.in_waiting < 5):
+            sleep(.005)
+        else: #waits until there is data of at least the size of the struct because if there is not that much data, there cannot be a complete struct
             
             received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
             self._bytes_received.extend(list(received)) #adds recieved data to a list
@@ -104,6 +122,7 @@ class RF():
                 else:
                     self._telem_frame_queue.put(frame)
                     self._current_telem_frame[:] = frame
+                    self.handled_most_recent.value = 0
                     
 
             if(self._bytes_received[0:4] == self._transmittion_constants['STRING_HEADER'] and len(self._bytes_received) >= 9):

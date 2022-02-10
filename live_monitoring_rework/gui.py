@@ -4,6 +4,7 @@ import random
 import sys
 from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
+import pyqtgraph.exporters
 import struct
 from multiprocessing import Value, Array, Queue
 
@@ -54,9 +55,31 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.stop_listening_and_save_button.clicked.connect(self.stop_and_save)
         self.stop_listening_and_save_button.setEnabled(False)
 
+        #Reset and Save Graphs
+        self.reset_and_save_graphs_button = QtWidgets.QPushButton("Reset and Save Graphs")
+        self.layout.addWidget(self.reset_and_save_graphs_button, 5, 0)
+        self.reset_and_save_graphs_button.clicked.connect(self.reset_and_save_graphs)
+        self.reset_and_save_graphs_button.setEnabled(False)
+        
+
+
         #Text view
         self.console = QtWidgets.QTextBrowser()
-        self.layout.addWidget(self.console, 1, 1, 4, 1) 
+        self.layout.addWidget(self.console, 1, 1, 5, 1) 
+
+
+    def reset_and_save_graphs(self):
+        for i, graph in enumerate(self.graphs):
+            exporter = pg.exporters.SVGExporter(graph.getPlotItem())
+            path = str(self.file_management_panel.output_location.joinpath('./Graphs/'+str(i)+'.svg'))
+            exporter.export(path)
+            graph.getPlotItem().clear()
+
+        self.file_management_panel.find_next_available_save_location_in_current_directory()
+
+        self.connect_serial_button.setEnabled(True)
+        self.reset_and_save_graphs_button.setEnabled(False)
+
 
 
 
@@ -92,12 +115,15 @@ class GroundControlWindow(QtWidgets.QWidget):
             'log_queue' : Queue(), #queue of all logs
             'frame_queue': Queue() #queue of all data frames received
         }
+        self.graphed_most_recent_value = Value('B')
+        self.graphed_most_recent_value.value = 0
+
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
-        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], telem_string=telem_frame_string)
+        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], handled_most_recent=self.graphed_most_recent_value, telem_string=telem_frame_string)
 
-        self.eulers.setup_connection(self._data['current_frame'])
-        self.velocities.setup_connection(self._data['current_frame'])
+        for graph in self.graphs:
+            graph.setup_connection(self._data['current_frame'])
 
     def stop_and_save(self):
         self._data['log_queue'].put('STOP')
@@ -105,24 +131,36 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.looping_for_data.value = 0
 
         self.stop_listening_and_save_button.setEnabled(False)
-        self.eulers.show_history()
-        self.velocities.show_history()
+        self.connect_serial_button.setEnabled(False)
+       
+        for graph in self.graphs:
+            graph.show_history()
 
         self.animation_timer.stop()
+        
+        self.reset_and_save_graphs_button.setEnabled(True)
 
     def setup_graphs(self):
-        self.eulers = custom_graph_widget((5, 6, 7), names=('euler_x', 'euler_y', 'euler_z'))
-        self.velocities = custom_graph_widget((2, 3, 4), names=('velocity_x', 'velocity_y', 'velocity_z'))
+        self.graphs = []
 
-        self.eulers.setYRange(-pi, pi, padding=0)
+        self.graphs.append(custom_graph_widget((5, 6, 7), names=('euler_x', 'euler_y', 'euler_z')))
+        self.graphs.append(custom_graph_widget((2, 3, 4), names=('velocity_x', 'velocity_y', 'velocity_z')))
+        self.graphs.append(custom_graph_widget((11, 12), names=('current_u[x]', 'current_u[y]')))
 
-        self.layout.addWidget(self.eulers, 0, 0)
-        self.layout.addWidget(self.velocities, 0, 1)
+
+        self.layout.addWidget(self.graphs[0], 0, 2)
+        self.layout.addWidget(self.graphs[1], 0, 0)
+        self.layout.addWidget(self.graphs[2], 0, 1)
+
         
     
     def _update_plot_data(self):
-        self.eulers.update_lines()
-        self.velocities.update_lines()
+        if(self.graphed_most_recent_value.value == 0):
+            for graph in self.graphs:
+                graph.update_lines()
+            self.graphed_most_recent_value.value = 1
+
+
 
     def _start_animation_timer(self):
         self.animation_timer = QtCore.QTimer()

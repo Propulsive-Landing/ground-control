@@ -32,16 +32,18 @@ class file_management_widget(QtWidgets.QWidget):
         select_output_directory_button.clicked.connect(self._get_output_location)
 
     def _get_output_location(self):
-        output_directory = Path(QtWidgets.QFileDialog.getExistingDirectory(self, "Choose Output Location"))
+        self.output_directory = Path(QtWidgets.QFileDialog.getExistingDirectory(self, "Choose Output Location"))
 
-        if(not output_directory):
+        if(not self.output_directory):
             return
-            
-        temp_location = output_directory.joinpath('./run0')
+        self.find_next_available_save_location_in_current_directory()
+
+    def find_next_available_save_location_in_current_directory(self):
+        temp_location = self.output_directory.joinpath('./run0')
         index = 1
 
         while(temp_location.exists()):
-            temp_location = output_directory.joinpath('./run'+str(index))
+            temp_location = self.output_directory.joinpath('./run'+str(index))
             index += 1
         
         self.output_location = temp_location
@@ -60,7 +62,11 @@ class file_management_widget(QtWidgets.QWidget):
                     for line in file.readlines():
                         line = line.strip()
                         if(line):
-                            temp_header += line.split(',')[2] + ','
+                            if(int(line.split(',')[1]) > 1):
+                                for i in range(0, int(line.split(',')[1])):
+                                    temp_header += line.split(',')[2] + '[' + str(i) + '], '
+                        else:
+                            temp_header += line.split(',')[2] + ', '
                 except:
                     print("ERR")
             self.header = temp_header
@@ -80,6 +86,7 @@ class file_management_widget(QtWidgets.QWidget):
 
     def create_files(self):
         mkdir(self.output_location)
+        mkdir(self.output_location.joinpath('./Graphs'))
 
         data_path = self.output_location.joinpath('./data.csv')
         log_path = self.output_location.joinpath('./output.log')
