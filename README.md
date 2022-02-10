@@ -22,7 +22,7 @@ This repository contains scripts and resources to monitor and control the launch
 
  1. Navigate to the `live_monitoring` folder in your terminal
  2. Run the command `python3 gui.py` (A gui should appear)
- 3. Click the `Select Struct Defintion Directory` button to select where the incoming structure is defined. (It will almost always be in "./structure_manager/data" folder)
+ 3. Click the `Select Struct Defintion Directory` button to select where the incoming structure is defined. (It will almost always be in `./structure_manager/data` folder)
  4. Click the `Select Output Directory` to determine where the output folder will be generated.
  5. Enter the XBee dongle port name into the GUI (e.g. "COM11") (This can be found in the "Device Manager" application on windows)
  6. Click `Connect Serial and Listen` to begin listening for data
