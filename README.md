@@ -35,9 +35,6 @@ This repository contains scripts and resources to monitor and control the launch
  2. Modify the types, names, and numbers so it matches what is sent from the flight computer
  3. The structure is saved when closing the window
 
-##  Analysis
- - To be completed
-
 ## Contributing
 
 Contributions are always welcome!
