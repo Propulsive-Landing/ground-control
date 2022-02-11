@@ -59,7 +59,7 @@ class RF():
         while(running.value == 1):
             if(self.input_receiver.poll()):
                 val = self.input_receiver.recv()
-                self._comport.write(bytes(val.encode('ascii', 'replace')))
+                self._comport.write(bytes((val+'\0').encode('ascii', 'replace')))
             self.read_binary()
         
         self._comport.close()

@@ -22,6 +22,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.init_widgets()
 
     def output(self, text):
+        self.console_scroll_bar.setValue(self.console_scroll_bar.maximum())
         self.console.append(text)
 
     def closeEvent(self, event):
@@ -34,7 +35,8 @@ class GroundControlWindow(QtWidgets.QWidget):
         
         #Text view
         self.console = QtWidgets.QTextBrowser()
-        self.layout.addWidget(self.console, 1, 1)
+        self.console_scroll_bar = self.console.verticalScrollBar() 
+        self.layout.addWidget(self.console, 1, 1, 4, 1)
 
         #Communication output
                 

@@ -70,8 +70,8 @@ class file_management_widget(QtWidgets.QWidget):
                             if(int(line.split(',')[1]) > 1):
                                 for i in range(0, int(line.split(',')[1])):
                                     temp_header += line.split(',')[2] + '[' + str(i) + '], '
-                        else:
-                            temp_header += line.split(',')[2] + ', '
+                            else:
+                                temp_header += line.split(',')[2] + ', '
                 except:
                     print("ERR")
             self.header = temp_header

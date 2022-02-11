@@ -43,6 +43,8 @@ class TypeManager():
     self.types = types
     self.numbers = numbers
     self.names = names
+  
+    self.rows = []
 
     self.script_path = Path(os.path.realpath(__file__)).parent
     self.structure_path = Path("./data/structure.txt")
@@ -56,6 +58,8 @@ class TypeManager():
   def add_value(self, input_type, input_number, input_name):
     row = tk.Frame(self.frame)
   
+    self.rows.append(row)
+
     selected = tk.StringVar()
     self.types.append(selected)
     selected.set(input_type)
@@ -76,6 +80,13 @@ class TypeManager():
     self.names.append(name)
   
     row.pack()
+
+  def remove_last_value(self):
+    self.names.pop(len(self.names)-1)
+    self.types.pop(len(self.types)-1)
+    self.numbers.pop(len(self.numbers)-1)
+
+    self.rows[-1].destroy()
 
   def add_section(self):
     self.add_value(list(self.options.keys())[0], 1, "")
@@ -167,6 +178,9 @@ def main():
   
   add_button = tk.Button(root, text="Add Type", command=typeManager.add_section)
   add_button.pack()
+
+  remove_button = tk.Button(root, text="Remove Last", command=typeManager.remove_last_value)
+  remove_button.pack()
 
 
   

@@ -117,7 +117,7 @@ class state_management_widget(QtWidgets.QWidget):
             'frame_queue': Queue() #queue of all data frames received
         }
         self.graphed_most_recent_value = Value('B')
-        self.graphed_most_recent_value.value = 0
+        self.graphed_most_recent_value.value = 1
 
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
