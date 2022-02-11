@@ -1,6 +1,4 @@
 from multiprocessing import Queue, Array, Value, Process, Pipe
-from multiprocessing.connection import PipeConnection
-from threading import Thread
 from time import sleep
 
 import serial
@@ -53,20 +51,15 @@ class RF():
         except ValueError:
             return False
 
-    def _write_loop(self, running, receiver : PipeConnection):
-        while(running.value == 1):
-            if(receiver.poll(timeout=1)):
-                val = receiver.recv()
-                self._comport.write(bytes(val.encode('ascii', 'replace')))
 
     def _listen_loop(self, running: Value):
         self._comport = serial.Serial(self.port, self.baud)
         self._comport.reset_input_buffer()
 
-        self.write_thread = Thread(target=self._write_loop, args=(running,self.input_receiver))
-        self.write_thread.start()
-
         while(running.value == 1):
+            if(self.input_receiver.poll()):
+                val = self.input_receiver.recv()
+                self._comport.write(bytes(val.encode('ascii', 'replace')))
             self.read_binary()
         
         self._comport.close()

@@ -3,14 +3,14 @@ from multiprocessing import Queue
 from itertools import chain
 
 class log_handler(QtCore.QRunnable):
-    def __init__(self, path : str, text_box : QtWidgets.QTextBrowser, log_queue: Queue):
+    def __init__(self, path : str, output_function, log_queue: Queue):
         super().__init__()
         self.path = path
-        self.text_box = text_box
+        self.output_function = output_function
         self.log_queue = log_queue
 
     def run(self):
-        self.text_box.append('Start logging')
+        self.output_function('GUI: Start logging')
         with open(self.path, 'a') as file:
             while(True):
                 message = self.log_queue.get()
@@ -20,19 +20,19 @@ class log_handler(QtCore.QRunnable):
                 file.write(str(message))
                 file.write('\n')
 
-                self.text_box.append(str(message))
+                self.output_function("Received: " + str(message))
 
-        self.text_box.append('End Logging, Saved')
+        self.output_function('GUI: End Logging, Saved')
 
 class telem_frame_handler(QtCore.QRunnable):
-    def __init__(self, path : str, text_box : QtWidgets.QTextBrowser, frame_queue: Queue):
+    def __init__(self, path : str, output_function, frame_queue: Queue):
         super().__init__()
         self.path = path
-        self.text_box = text_box
+        self.output_function = output_function
         self.frame_queue = frame_queue
 
     def run(self):
-        self.text_box.append('Start data logging')
+        self.output_function('GUI: Start data logging')
         with open(self.path, 'a') as file:
             while(True):
                 message = self.frame_queue.get()
@@ -43,4 +43,4 @@ class telem_frame_handler(QtCore.QRunnable):
                     file.write(str(x) + ",")
                 file.write('\n')
 
-        self.text_box.append('End data logging, Saved')
+        self.output_function('GUI: End data logging, Saved')

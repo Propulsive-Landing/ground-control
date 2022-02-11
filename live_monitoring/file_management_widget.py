@@ -3,6 +3,7 @@ from pathlib import Path
 from os import mkdir
 
 
+
 class file_management_widget(QtWidgets.QWidget):
     def __init__(self, output) -> None:
         super().__init__()
@@ -20,6 +21,10 @@ class file_management_widget(QtWidgets.QWidget):
 
         self.layout.addRow(select_output_directory_button, self.show_output_directory)
         
+        self.port_input = QtWidgets.QLineEdit()
+        self.port_input.setPlaceholderText("Enter Port")
+        self.layout.addRow(self.port_input)
+
         self.output = output
 
 
