@@ -61,11 +61,17 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.reset_and_save_graphs_button.clicked.connect(self.reset_and_save_graphs)
         self.reset_and_save_graphs_button.setEnabled(False)
         
-
+        #Send button
+        self.button = QtWidgets.QPushButton("SEND")
+        self.layout.addWidget(self.button, 1, 2)
+        self.button.clicked.connect(self.send_test)
 
         #Text view
         self.console = QtWidgets.QTextBrowser()
         self.layout.addWidget(self.console, 1, 1, 5, 1) 
+
+    def send_test(self):
+        self.rf.input_transmitter.send("HELLO")
 
 
     def reset_and_save_graphs(self):

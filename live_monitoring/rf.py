@@ -30,7 +30,7 @@ class RF():
             'size_of_telem_struct': calcsize(telem_string)
         }
 
-        self.input_receiver, self.input_transmitter = Pipe(duplex=False)
+        self.input_receiver, self.input_transmitter = Pipe()
 
         self.handled_most_recent = handled_most_recent
 
@@ -57,13 +57,14 @@ class RF():
         while(running.value == 1):
             if(receiver.poll(timeout=1)):
                 val = receiver.recv()
-                self._comport.write(bytes(val))
+                self._comport.write(bytes(val.encode('ascii', 'replace')))
 
     def _listen_loop(self, running: Value):
         self._comport = serial.Serial(self.port, self.baud)
         self._comport.reset_input_buffer()
 
         self.write_thread = Thread(target=self._write_loop, args=(running,self.input_receiver))
+        self.write_thread.start()
 
         while(running.value == 1):
             self.read_binary()
