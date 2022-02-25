@@ -10,7 +10,7 @@ from threading_logs import telem_frame_handler, log_handler
 from rf import RF
 
 class state_management_widget(QtWidgets.QWidget):
-    def __init__(self, output, file_management_panel : file_management_widget, thread_pool, graphs, transmitting_buttons = []) -> None:
+    def __init__(self, output, file_management_panel : file_management_widget, thread_pool, graphs, numerical_displays, transmitting_buttons = []) -> None:
         super().__init__()
         self.layout = QtWidgets.QFormLayout(self)
 
@@ -18,6 +18,7 @@ class state_management_widget(QtWidgets.QWidget):
         self.file_management_panel = file_management_panel
         self.thread_pool = thread_pool 
         self.graphs = graphs #list of graphs type: pg.PlotWidget
+        self.numerical_displays = numerical_displays #List of extension of QLabels
 
         self.transmitting_buttons = transmitting_buttons #A list of buttons that iteract with RF my be disabled (or enabled) from here
 
@@ -46,6 +47,8 @@ class state_management_widget(QtWidgets.QWidget):
         if(self.graphed_most_recent_value.value == 0):
             for graph in self.graphs:
                 graph.update_lines()
+            for number_display in self.numerical_displays:
+                number_display.update_value()
             self.graphed_most_recent_value.value = 1
 
     def _start_animation_timer(self):
@@ -125,3 +128,5 @@ class state_management_widget(QtWidgets.QWidget):
 
         for graph in self.graphs:
             graph.setup_connection(self._data['current_frame'])
+        for number in self.numerical_displays:
+            number.setup_connection(self._data['current_frame'])

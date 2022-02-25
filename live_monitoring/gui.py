@@ -1,9 +1,11 @@
 import sys
+import pyqtgraph as pg
 from PySide6 import QtCore, QtWidgets
 
 from state_management_widget import state_management_widget
 from file_management_widget import file_management_widget
 from custom_graph_widget import custom_graph_widget
+from custom_number_display import custom_number_display
 
 
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
@@ -17,12 +19,14 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.layout = QtWidgets.QGridLayout(self)
         self._thread_pool = QtCore.QThreadPool.globalInstance()
         
+        pg.setConfigOption('background', 'w')
         
+        self.setup_number_displays()
         self.setup_graphs()
         self.init_widgets()
 
     def output(self, text):
-        self.console_scroll_bar.setValue(self.console_scroll_bar.maximum())
+        #self.console_scroll_bar.setValue(self.console_scroll_bar.maximum())
         self.console.append(text)
 
     def closeEvent(self, event):
@@ -36,7 +40,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         #Text view
         self.console = QtWidgets.QTextBrowser()
         self.console_scroll_bar = self.console.verticalScrollBar() 
-        self.layout.addWidget(self.console, 1, 1, 4, 1)
+        self.layout.addWidget(self.console, 1, 1, 3, 1)
 
         #Communication output
                 
@@ -53,9 +57,13 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.send_command_button.clicked.connect(send_and_clear_command)
 
         #State management
-        self.state_management_panel = state_management_widget(self.output, self.file_management_panel, self._thread_pool, self.graphs, transmitting_buttons=[self.send_command_button])
+        self.state_management_panel = state_management_widget(self.output, self.file_management_panel, self._thread_pool, self.graphs, self.numerical_displays, transmitting_buttons=[self.send_command_button])
         self.layout.addWidget(self.state_management_panel, 2, 0, 2, 1)
 
+    def setup_number_displays(self):
+        self.numerical_displays = []
+        self.numerical_displays.append(custom_number_display(2, "Mode"))
+        self.layout.addWidget(self.numerical_displays[0], 4, 1)
 
     def setup_graphs(self):
         self.graphs = []
@@ -64,10 +72,15 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.graphs.append(custom_graph_widget((2, 3, 4), names=('velocity_x', 'velocity_y', 'velocity_z')))
         self.graphs.append(custom_graph_widget((11, 12), names=('current_u[x]', 'current_u[y]')))
 
+        self.graphs.append(custom_graph_widget((11, 12), names=('current_u[x]', 'current_u[y]')))
+        self.graphs.append(custom_graph_widget((11, 12), names=('current_u[x]', 'current_u[y]')))
 
         self.layout.addWidget(self.graphs[0], 0, 2)
         self.layout.addWidget(self.graphs[1], 0, 0)
         self.layout.addWidget(self.graphs[2], 0, 1)
+
+        self.layout.addWidget(self.graphs[3], 4, 0)
+        self.layout.addWidget(self.graphs[4], 4, 2)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
@@ -75,5 +88,6 @@ if __name__ == "__main__":
     window = GroundControlWindow()
     window.resize(800, 600)
     window.show()
+    
 
     sys.exit(app.exec())
