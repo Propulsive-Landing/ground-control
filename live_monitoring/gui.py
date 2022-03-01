@@ -39,13 +39,18 @@ class GroundControlWindow(QtWidgets.QWidget):
         
         #Text view
         self.console = QtWidgets.QTextBrowser()
-        self.console_scroll_bar = self.console.verticalScrollBar() 
         self.layout.addWidget(self.console, 1, 1, 3, 1)
 
         #Communication output
                 
+        def send_command(command: str):
+            try:
+                self.state_management_panel.rf.input_transmitter.send(command)
+            except AttributeError:
+                self.output("Serial not Connected")
+
         def send_and_clear_command():
-            self.state_management_panel.rf.input_transmitter.send(self.command.text())
+            send_command(self.command.text())
             self.command.setText("")
 
         self.command = QtWidgets.QLineEdit()
@@ -55,6 +60,18 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.send_command_button = QtWidgets.QPushButton("Send Command")
         self.layout.addWidget(self.send_command_button, 2, 2)
         self.send_command_button.clicked.connect(send_and_clear_command)
+        
+        #Output Buttons
+        abort_button= QtWidgets.QPushButton("ABORT")
+        abort_button.setStyleSheet("background: red; color: white; font-size: 13px;")
+        self.layout.addWidget(abort_button, 4, 2)
+
+        countdown_button = QtWidgets.QPushButton("GO FOR COUNTDOWN")
+        countdown_button.setStyleSheet("background: lime; font-size: 13px;")
+        self.layout.addWidget(countdown_button, 3, 2)
+
+        countdown_button.clicked.connect(lambda: send_command("COMMAND: SET_MODE 2"))
+        abort_button.clicked.connect(lambda : send_command("COMMAND: ABORT"))
 
         #State management
         self.state_management_panel = state_management_widget(self.output, self.file_management_panel, self._thread_pool, self.graphs, self.numerical_displays, transmitting_buttons=[self.send_command_button])
@@ -62,7 +79,7 @@ class GroundControlWindow(QtWidgets.QWidget):
 
     def setup_number_displays(self):
         self.numerical_displays = []
-        self.numerical_displays.append(custom_number_display(2, "Mode"))
+        self.numerical_displays.append(custom_number_display(1, "Mode"))
         self.layout.addWidget(self.numerical_displays[0], 4, 1)
 
     def setup_graphs(self):
@@ -70,17 +87,11 @@ class GroundControlWindow(QtWidgets.QWidget):
 
         self.graphs.append(custom_graph_widget((5, 6, 7), names=('euler_x', 'euler_y', 'euler_z')))
         self.graphs.append(custom_graph_widget((2, 3, 4), names=('velocity_x', 'velocity_y', 'velocity_z')))
-        self.graphs.append(custom_graph_widget((11, 12), names=('current_u[x]', 'current_u[y]')))
+        self.graphs.append(custom_graph_widget((8, 9, 10), names=('acc_raw_0[0]', 'acc_raw_0[1]', 'acc_raw_0[2]')))
 
-        self.graphs.append(custom_graph_widget((11, 12), names=('current_u[x]', 'current_u[y]')))
-        self.graphs.append(custom_graph_widget((11, 12), names=('current_u[x]', 'current_u[y]')))
-
-        self.layout.addWidget(self.graphs[0], 0, 2)
+        self.layout.addWidget(self.graphs[0], 0, 1)
         self.layout.addWidget(self.graphs[1], 0, 0)
-        self.layout.addWidget(self.graphs[2], 0, 1)
-
-        self.layout.addWidget(self.graphs[3], 4, 0)
-        self.layout.addWidget(self.graphs[4], 4, 2)
+        self.layout.addWidget(self.graphs[2], 0, 2)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])

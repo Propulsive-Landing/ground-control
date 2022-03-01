@@ -3,8 +3,6 @@ unsigned int (4B),1,magic_number
 unsigned short (2B),1,mode
 float (4B),3,velocity
 float (4B),3,euler
+float (4B),3,acc_raw_0
 float (4B),1,dt
-float (4B),2,voltages
-float (4B),2,current_u
-float (4B),2,servo_u
 unsigned int (4B),1,footer
