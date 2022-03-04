@@ -25,9 +25,12 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.setup_graphs()
         self.init_widgets()
 
+    #Low potential for but possible RACE CONDITION
     def output(self, text):
-        #self.console_scroll_bar.setValue(self.console_scroll_bar.maximum())
-        self.console.append(text)
+        self.console.setText(f"{text}\n{self.console.document().toPlainText()}")
+
+
+        
 
     def closeEvent(self, event):
         self.state_management_panel.stop_and_save()
