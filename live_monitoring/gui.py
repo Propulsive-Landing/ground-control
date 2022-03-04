@@ -70,7 +70,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         countdown_button.setStyleSheet("background: lime; font-size: 13px;")
         self.layout.addWidget(countdown_button, 3, 2)
 
-        countdown_button.clicked.connect(lambda: send_command("COMMAND: SET_MODE 2"))
+        countdown_button.clicked.connect(lambda: send_command("COMMAND: set_mode 1"))
         abort_button.clicked.connect(lambda : send_command("COMMAND: ABORT"))
 
         #State management
