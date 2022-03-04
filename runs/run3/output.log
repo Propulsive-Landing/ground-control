@@ -1,0 +1,12 @@
+[0]TVC test completed
+[0]sensors initialized
+[420]All values match
+[0]timing set, starting PL_STANDBY
+invalid frame
+aligned: [158, 211, 60, 106, 86, 208, 187, 41, 92, 143, 190, 41, 92, 143, 189, 174, 71] 14 bytes
+aligned: [189, 174, 71, 25, 65, 239, 89, 87, 59, 222, 250, 254, 202] 10 bytes
+aligned: [250, 254, 202, 239, 190, 173, 222, 0, 0, 0, 0] 3 bytes
+[4118]COUNTDOWN START
+[5506]IGNITION
+[6898]SAFING
+[6898]SD transfer start

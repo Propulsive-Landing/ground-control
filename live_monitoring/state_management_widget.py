@@ -59,8 +59,8 @@ class state_management_widget(QtWidgets.QWidget):
 
     def reset_and_save_graphs(self):
         for i, graph in enumerate(self.graphs):
-            exporter = pg.exporters.SVGExporter(graph.getPlotItem())
-            path = str(self.file_management_panel.output_location.joinpath('./Graphs/'+str(i)+'.svg'))
+            exporter = pg.exporters.ImageExporter(graph.getPlotItem())
+            path = str(self.file_management_panel.output_location.joinpath('./Graphs/'+str(i)+'.png'))
             exporter.export(path)
             graph.getPlotItem().clear()
 
@@ -95,19 +95,22 @@ class state_management_widget(QtWidgets.QWidget):
             button.setEnabled(True)
 
     def stop_and_save(self):
-        self._data['log_queue'].put('STOP')
-        self._data['frame_queue'].put('STOP')
-        self.looping_for_data.value = 0
+        try:
+            self._data['log_queue'].put('STOP')
+            self._data['frame_queue'].put('STOP')
+            self.looping_for_data.value = 0
 
-        self.stop_listening_and_save_button.setEnabled(False)
-        self.connect_serial_button.setEnabled(False)
-       
-        for graph in self.graphs:
-            graph.show_history()
-
-        self.animation_timer.stop()
+            self.stop_listening_and_save_button.setEnabled(False)
+            self.connect_serial_button.setEnabled(False)
         
-        self.reset_and_save_graphs_button.setEnabled(True)
+            for graph in self.graphs:
+                graph.show_history()
+
+            self.animation_timer.stop()
+            
+            self.reset_and_save_graphs_button.setEnabled(True)
+        except AttributeError:
+            pass
 
     #does not connect the port, just passses the info to the RF class so it can be used later
     def initialize_rf(self, port : str, baud : int):

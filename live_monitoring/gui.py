@@ -1,6 +1,7 @@
 import sys
 import pyqtgraph as pg
 from PySide6 import QtCore, QtWidgets
+from threading import Lock
 
 from state_management_widget import state_management_widget
 from file_management_widget import file_management_widget
@@ -25,9 +26,9 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.setup_graphs()
         self.init_widgets()
 
-    #Low potential for but possible RACE CONDITION
+    
     def output(self, text):
-        self.console.setText(f"{text}\n{self.console.document().toPlainText()}")
+        self.console.append(text)
 
 
         
@@ -42,6 +43,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         
         #Text view
         self.console = QtWidgets.QTextBrowser()
+        self.console_lock = Lock()
         self.layout.addWidget(self.console, 1, 1, 3, 1)
 
         #Communication output
