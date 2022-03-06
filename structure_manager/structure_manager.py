@@ -87,6 +87,7 @@ class TypeManager():
     self.numbers.pop(len(self.numbers)-1)
 
     self.rows[-1].destroy()
+    self.rows.pop()
 
   def add_section(self):
     self.add_value(list(self.options.keys())[0], 1, "")
