@@ -87,8 +87,15 @@ class state_management_widget(QtWidgets.QWidget):
         self.looping_for_data.value = 1
         self.rf.start_listen_loop(self.looping_for_data)
 
-        self.thread_pool.start(log_handler(self.log_path, self.output, self._data['log_queue']))
-        self.thread_pool.start(telem_frame_handler(self.data_path, self.output, self._data['frame_queue']))
+        logging = log_handler(self.log_path, self._data['log_queue'])
+        telem = telem_frame_handler(self.data_path, self._data['frame_queue'])
+
+        logging.signals.log_signal.connect(self.output)
+        telem.signals.telem_signal.connect(self.output)
+
+        self.thread_pool.start(logging)
+        self.thread_pool.start(telem)
+        
         self.stop_listening_and_save_button.setEnabled(True)
 
         for button in self.transmitting_buttons:
