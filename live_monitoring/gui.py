@@ -85,7 +85,7 @@ class GroundControlWindow(QtWidgets.QWidget):
     def setup_number_displays(self):
         self.numerical_displays = []
         self.numerical_displays.append(custom_number_display(1, "Mode"))
-        self.layout.addWidget(self.numerical_displays[0], 4, 1)
+        self.layout.addWidget(self.numerical_displays[0], 4, 0)
 
     def setup_graphs(self):
         self.graphs = []

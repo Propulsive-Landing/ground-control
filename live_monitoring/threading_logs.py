@@ -17,6 +17,7 @@ class log_handler(QtCore.QRunnable):
                 if(message == 'STOP'):
                     break
         
+                print(str(message))
                 file.write(str(message))
                 file.write('\n')
 
