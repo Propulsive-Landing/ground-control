@@ -9,6 +9,10 @@ import gui_util
 from threading_logs import telem_frame_handler, log_handler
 from rf import RF
 
+
+class state_signals(QtCore.QObject):
+    connection_monitor = QtCore.Signal(bool)
+
 class state_management_widget(QtWidgets.QWidget):
     def __init__(self, output, file_management_panel : file_management_widget, thread_pool, graphs, numerical_displays, transmitting_buttons = []) -> None:
         super().__init__()
@@ -20,10 +24,9 @@ class state_management_widget(QtWidgets.QWidget):
         self.graphs = graphs #list of graphs type: pg.PlotWidget
         self.numerical_displays = numerical_displays #List of extension of QLabels
 
-        self.transmitting_buttons = transmitting_buttons #A list of buttons that iteract with RF my be disabled (or enabled) from here
+        self.signals = state_signals()
+        self.connection_monitor = self.signals.connection_monitor
 
-        for button in self.transmitting_buttons:
-            button.setEnabled(False)
 
         #connect button
         self.connect_serial_button = QtWidgets.QPushButton("Connect Serial and Listen")
@@ -98,8 +101,6 @@ class state_management_widget(QtWidgets.QWidget):
         
         self.stop_listening_and_save_button.setEnabled(True)
 
-        for button in self.transmitting_buttons:
-            button.setEnabled(True)
 
     def stop_and_save(self):
         try:
@@ -140,3 +141,10 @@ class state_management_widget(QtWidgets.QWidget):
             graph.setup_connection(self._data['current_frame'])
         for number in self.numerical_displays:
             number.setup_connection(self._data['current_frame'])
+            
+    
+    def send_command(self, command: str):
+        try:
+            self.rf.input_transmitter.send(command)
+        except AttributeError:
+            self.output("Serial not Connected")

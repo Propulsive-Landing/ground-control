@@ -1,9 +1,14 @@
 from PySide6 import QtCore, QtWidgets
 from multiprocessing import Queue
-from itertools import chain
 
 class log_signals(QtCore.QObject):
     log_signal = QtCore.Signal(str)
+
+class telem_signals(QtCore.QObject):
+    telem_signal = QtCore.Signal(str)
+
+
+
 
 class log_handler(QtCore.QRunnable):
     def __init__(self, path : str, log_queue: Queue):
@@ -28,8 +33,6 @@ class log_handler(QtCore.QRunnable):
 
         self.signals.log_signal.emit('GUI: End Logging, Saved')
 
-class telem_signals(QtCore.QObject):
-    telem_signal = QtCore.Signal(str)
 
 class telem_frame_handler(QtCore.QRunnable):
     def __init__(self, path : str, frame_queue: Queue):

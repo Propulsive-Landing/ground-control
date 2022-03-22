@@ -1,11 +1,9 @@
-from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
-from multiprocessing import Array
 
 class custom_graph_widget(pg.PlotWidget):
-    def __init__(self, indexes: tuple, names: tuple):
+    def __init__(self, indexes_in_struct: tuple, names: tuple):
         super().__init__()
-        self.indexes = indexes
+        self.indexes = indexes_in_struct
         self.names = names
 
         self.graphed_values_num = 100
