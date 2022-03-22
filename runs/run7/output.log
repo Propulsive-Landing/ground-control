@@ -1,7 +1,9 @@
-[0]sensors initialized
+[0]telemetry initialized
+[0]program start
+[0]TVC initialized
+[0]testing TVC...
+[0]TVC test completed
 [420]All values match
 [0]timing set, starting PL_STANDBY
-[21933]COUNTDOWN START
-[23379]IGNITION
-invalid frame
-aligned: [59, 62, 81, 202, 255, 189, 174, 150, 222, 189, 182, 106, 87, 59, 222, 250, 254, 202, 239, 190, 173] 18 bytes
+[4209]COUNTDOWN START
+[5628]IGNITION
