@@ -12,6 +12,7 @@ from rf import RF
 
 class state_signals(QtCore.QObject):
     connection_monitor = QtCore.Signal(bool)
+    clear_output = QtCore.Signal()
 
 class state_management_widget(QtWidgets.QWidget):
     def __init__(self, output, file_management_panel : file_management_widget, thread_pool, graphs, numerical_displays, transmitting_buttons = []) -> None:
@@ -27,22 +28,26 @@ class state_management_widget(QtWidgets.QWidget):
         self.signals = state_signals()
         self.connection_monitor = self.signals.connection_monitor
 
-
         #connect button
         self.connect_serial_button = QtWidgets.QPushButton("Connect Serial and Listen")
         self.layout.addRow(self.connect_serial_button)
         self.connect_serial_button.clicked.connect(self.connect_and_listen)
 
         #stop and save button
-        self.stop_listening_and_save_button = QtWidgets.QPushButton("Stop Listening and Save")
-        self.layout.addRow(self.stop_listening_and_save_button)
-        self.stop_listening_and_save_button.clicked.connect(self.stop_and_save)
-        self.stop_listening_and_save_button.setEnabled(False)
+        self.stop_listening_button = QtWidgets.QPushButton("Stop Listening")
+        self.layout.addRow(self.stop_listening_button)
+        self.stop_listening_button.clicked.connect(self.stop_listening)
+        self.stop_listening_button.setEnabled(False)
 
         #Reset and Save Graphs
         self.reset_and_save_graphs_button = QtWidgets.QPushButton("Reset and Save Graphs")
-        self.layout.addRow(self.reset_and_save_graphs_button)
-        self.reset_and_save_graphs_button.clicked.connect(self.reset_and_save_graphs)
+        self.reset_and_discard_button = QtWidgets.QPushButton("Reset and Discard")
+
+        self.layout.addRow(self.reset_and_save_graphs_button, self.reset_and_discard_button)
+        self.reset_and_save_graphs_button.clicked.connect(self.save_and_reset)
+        self.reset_and_discard_button.clicked.connect(self.discard_files_and_reset)
+
+        self.reset_and_discard_button.setEnabled(False)
         self.reset_and_save_graphs_button.setEnabled(False)
 
 
@@ -60,17 +65,26 @@ class state_management_widget(QtWidgets.QWidget):
         self.animation_timer.timeout.connect(self._update_plot_data)
         self.animation_timer.start()
 
-    def reset_and_save_graphs(self):
+    def reset_graphs(self):
+        self.reset_and_discard_button.setEnabled(False)
+        self.reset_and_save_graphs_button.setEnabled(False)
         for i, graph in enumerate(self.graphs):
             exporter = pg.exporters.ImageExporter(graph.getPlotItem())
-            path = str(self.file_management_panel.output_location.joinpath('./Graphs/'+str(i)+'.png'))
-            exporter.export(path)
+
+            try:
+                path = str(self.file_management_panel.output_location.joinpath('./Graphs/'+str(i)+'.png'))
+                exporter.export(path)
+            except Exception as e:
+                print(e)
+
             graph.getPlotItem().clear()
 
         self.file_management_panel.find_next_available_save_location_in_current_directory()
 
         self.connect_serial_button.setEnabled(True)
         self.reset_and_save_graphs_button.setEnabled(False)
+
+        self.signals.clear_output.emit()
 
     def connect_and_listen(self):
         if(not self.file_management_panel.check_ready()):
@@ -99,16 +113,16 @@ class state_management_widget(QtWidgets.QWidget):
         self.thread_pool.start(logging)
         self.thread_pool.start(telem)
         
-        self.stop_listening_and_save_button.setEnabled(True)
+        self.stop_listening_button.setEnabled(True)
+        self.connect_serial_button.setEnabled(False)
 
-
-    def stop_and_save(self):
+    def stop_listening(self):
         try:
             self._data['log_queue'].put('STOP')
             self._data['frame_queue'].put('STOP')
             self.looping_for_data.value = 0
 
-            self.stop_listening_and_save_button.setEnabled(False)
+            self.stop_listening_button.setEnabled(False)
             self.connect_serial_button.setEnabled(False)
         
             for graph in self.graphs:
@@ -117,10 +131,18 @@ class state_management_widget(QtWidgets.QWidget):
             self.animation_timer.stop()
             
             self.reset_and_save_graphs_button.setEnabled(True)
+            self.reset_and_discard_button.setEnabled(True)
         except AttributeError:
             pass
         finally:
             self.signals.connection_monitor.emit(False)
+
+    def discard_files_and_reset(self):
+        self.file_management_panel.delete_files_from_current_run()
+        self.reset_graphs()
+
+    def save_and_reset(self):
+        self.reset_graphs()
 
     #does not connect the port, just passses the info to the RF class so it can be used later
     def initialize_rf(self, port : str, baud : int):

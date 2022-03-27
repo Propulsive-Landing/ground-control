@@ -1,6 +1,7 @@
 from PySide6 import QtWidgets
 from pathlib import Path
 from os import mkdir
+from shutil import rmtree
 
 
 
@@ -116,6 +117,9 @@ class file_management_widget(QtWidgets.QWidget):
             return False
 
         return True
+
+    def delete_files_from_current_run(self):
+        rmtree(self.output_location)
 
     
 

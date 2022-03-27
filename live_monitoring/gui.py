@@ -38,6 +38,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         #State management
         self.state_management_panel = state_management_widget(self.output, self.file_management_panel, self._thread_pool, self.graphs, self.numerical_displays)
         self.layout.addWidget(self.state_management_panel, 2, 0)
+        self.state_management_panel.signals.clear_output.connect(self.clear_console)
 
         #Communication output
         self.command_panel = commanding_pannel()
@@ -64,8 +65,11 @@ class GroundControlWindow(QtWidgets.QWidget):
     def output(self, text):
         self.console.append(text)
 
+    def clear_console(self):
+        self.console.clear()
+
     def closeEvent(self, event):
-        self.state_management_panel.stop_and_save()
+        self.state_management_panel.stop_listening()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
