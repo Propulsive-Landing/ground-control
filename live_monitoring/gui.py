@@ -54,8 +54,8 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.graphs = []
 
         self.graphs.append(custom_graph_widget(indexes_in_struct=(2, 3, 4), names=('euler_x', 'euler_y', 'euler_z')))
-        self.graphs.append(custom_graph_widget(indexes_in_struct=(6, 8, 11), names=('x[1]', 'x[3]', 'x[6]')))
-        self.graphs.append(custom_graph_widget(indexes_in_struct=(9, 10, 12), names=('x[4]', 'x[5]', 'x[7]')))
+        self.graphs.append(custom_graph_widget(indexes_in_struct=(5, 6, 7), names=('acc_imu[0]', 'acc_imu[1]', 'acc_imu[2]')))
+        self.graphs.append(custom_graph_widget(indexes_in_struct=(8, 9, 10), names=('acc_b[0]', 'acc_b[1]', 'acc_b[2]')))
 
         self.layout.addWidget(self.graphs[0], 0, 0)
         self.layout.addWidget(self.graphs[1], 0, 1)
