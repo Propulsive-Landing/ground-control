@@ -33,7 +33,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         
         #Text view
         self.console = QtWidgets.QTextBrowser()
-        self.layout.addWidget(self.console, 1, 1, 3, 1)
+        self.layout.addWidget(self.console, 1, 1, 2, 1)
 
         #State management
         self.state_management_panel = state_management_widget(self.output, self.file_management_panel, self._thread_pool, self.graphs, self.numerical_displays)
@@ -41,7 +41,7 @@ class GroundControlWindow(QtWidgets.QWidget):
 
         #Communication output
         self.command_panel = commanding_pannel()
-        self.layout.addWidget(self.command_panel, 1, 2, 3, 1)
+        self.layout.addWidget(self.command_panel, 1, 2, 2, 1)
         self.command_panel.command_signal.connect(self.state_management_panel.send_command)
     
 
@@ -57,8 +57,8 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.graphs.append(custom_graph_widget(indexes_in_struct=(6, 8, 11), names=('x[1]', 'x[3]', 'x[6]')))
         self.graphs.append(custom_graph_widget(indexes_in_struct=(9, 10, 12), names=('x[4]', 'x[5]', 'x[7]')))
 
-        self.layout.addWidget(self.graphs[0], 0, 1)
-        self.layout.addWidget(self.graphs[1], 0, 0)
+        self.layout.addWidget(self.graphs[0], 0, 0)
+        self.layout.addWidget(self.graphs[1], 0, 1)
         self.layout.addWidget(self.graphs[2], 0, 2)
 
     def output(self, text):
@@ -74,5 +74,4 @@ if __name__ == "__main__":
     window.resize(800, 600)
     window.show()
     
-
     sys.exit(app.exec())

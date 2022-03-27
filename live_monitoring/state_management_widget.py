@@ -80,7 +80,7 @@ class state_management_widget(QtWidgets.QWidget):
             return
         
         self.initialize_rf(self.file_management_panel.port_input.text(), 9600)
-            
+        self.signals.connection_monitor.emit(True) 
         self._start_animation_timer()
             
         self.data_path, self.log_path = self.file_management_panel.create_files()
@@ -118,6 +118,8 @@ class state_management_widget(QtWidgets.QWidget):
             self.reset_and_save_graphs_button.setEnabled(True)
         except AttributeError:
             pass
+        finally:
+            self.signals.connection_monitor.emit(False)
 
     #does not connect the port, just passses the info to the RF class so it can be used later
     def initialize_rf(self, port : str, baud : int):
