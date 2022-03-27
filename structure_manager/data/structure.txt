@@ -3,6 +3,7 @@ unsigned int (4B),1,magic_number
 unsigned short (2B),1,mode
 float (4B),3,euler
 float (4B),3,acc_imu
+float (4B),3,acc_b
 float (4B),3,v_b
 float (4B),3,v_e
 unsigned int (4B),1,footer

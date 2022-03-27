@@ -1,5 +1,6 @@
 from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
+from pyqtgraph import exporters
 from multiprocessing import Array, Value, Queue
 import struct
 
