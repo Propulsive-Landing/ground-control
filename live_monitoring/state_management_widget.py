@@ -61,7 +61,7 @@ class state_management_widget(QtWidgets.QWidget):
 
     def _start_animation_timer(self):
         self.animation_timer = QtCore.QTimer()
-        self.animation_timer.setInterval(10)
+        self.animation_timer.setInterval(25)
         self.animation_timer.timeout.connect(self._update_plot_data)
         self.animation_timer.start()
 
@@ -132,6 +132,8 @@ class state_management_widget(QtWidgets.QWidget):
             
             self.reset_and_save_graphs_button.setEnabled(True)
             self.reset_and_discard_button.setEnabled(True)
+
+            self.rf = None
         except AttributeError:
             pass
         finally:

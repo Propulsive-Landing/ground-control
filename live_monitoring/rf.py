@@ -6,7 +6,7 @@ from struct import *
 
 
 class RF():
-    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, handled_most_recent : Value, backlog_threshold = 6000, telem_string='=IiffffI'):
+    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, handled_most_recent : Value, backlog_threshold = 120, telem_string='=IiffffI'):
 
         self.port = port
         self.baud = baud
@@ -76,7 +76,7 @@ class RF():
     #Should be called with high frequency to ensure propper readings
     def read_binary(self):
         if(self._comport.in_waiting < 5):
-            sleep(.005)
+            pass
         else: #waits until there is data of at least the size of the struct because if there is not that much data, there cannot be a complete struct
             
             received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
