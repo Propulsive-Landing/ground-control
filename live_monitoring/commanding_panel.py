@@ -34,12 +34,22 @@ class commanding_pannel(QtWidgets.QLabel):
         self.standby_button.setStyleSheet("background: lime; font-size: 13px;")
         self.layout.addWidget(self.standby_button, 3, 0)
 
+        self.nav_update_bias_button = QtWidgets.QPushButton("Update Nav Bias")
+        self.nav_update_bias_button.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.nav_update_bias_button, 4, 0)
+
+        self.nav_reset_bias_button = QtWidgets.QPushButton("Reset Nav Bias")
+        self.nav_reset_bias_button.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.nav_reset_bias_button, 4, 1)
+
     def connect_functionality(self):
         self.command.returnPressed.connect(self.send_command_and_clear_text)
         self.send_command_button.clicked.connect(self.send_command_and_clear_text)
         self.countdown_button.clicked.connect(lambda: self.send_command("COMMAND: standby_to_countdown"))
         self.standby_button.clicked.connect(lambda: self.send_command("COMMAND: idle_to_standby"))
         self.abort_button.clicked.connect(lambda : self.send_command("COMMAND: ABORT"))
+        self.nav_update_bias_button.clicked.connect(lambda : self.send_command("COMMAND: nav_bias"))
+        self.nav_reset_bias_button.clicked.connect(lambda : self.send_command("COMMAND: nav_reset"))
 
 
     def send_command(self, command : str):
