@@ -93,7 +93,7 @@ class RF():
             if(len(self._bytes_received) < 10):
                 return
             if(self._bytes_received[0:4] != self._transmittion_constants['TELEM_HEADER'] and self._bytes_received[0:4] != self._transmittion_constants['STRING_HEADER']): #if the first four bytes received do not match the struct magic number, then alignment must be done
-                stra = f'aligned: {self._bytes_received} '
+                stra = f'aligned: {self._bytes_received}'
                 
                 iterations = 0
                 while(len(self._bytes_received) >= 4 and (self._bytes_received[0:4] != self._transmittion_constants['TELEM_HEADER'] and self._bytes_received[0:4] != self._transmittion_constants['STRING_HEADER'])): #removes from the front of the struct until a head is found
