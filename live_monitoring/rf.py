@@ -6,7 +6,7 @@ from struct import *
 
 
 class RF():
-    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, handled_most_recent : Value, backlog_threshold = 120, telem_string='=IiffffI'):
+    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, handled_most_recent : Value, backlog_threshold = 420, telem_string='=IiffffI'):
 
         self.port = port
         self.baud = baud
@@ -123,7 +123,7 @@ class RF():
                 byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is size
                 length = unpack('=B', byte_after_header)[0]
 
-                if(len(self._bytes_received[5:]) >= length + 5):
+                if(len(self._bytes_received[5:]) >= length + 4):
                     incomingString = bytearray(self._bytes_received[5:5+length+4]) #length of footer is 4
                     del self._bytes_received[0:5+length+4]
                     string_with_struct = '=' + str(length) + 'cI'
