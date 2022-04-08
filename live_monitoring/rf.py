@@ -76,8 +76,8 @@ class RF():
     #Should be called with high frequency to ensure propper readings
     def read_binary(self):
         if(self._comport.in_waiting < 5):
-            sleep(.05)
-        else: #waits until there is data of at least the size of the struct because if there is not that much data, there cannot be a complete struct
+            sleep(self._delay_between_packets)
+        else: #waits until there is data o at least the size of the struct because if there is not that much data, there cannot be a complete struct
             
             received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
             self._bytes_received.extend(list(received)) #adds recieved data to a list
