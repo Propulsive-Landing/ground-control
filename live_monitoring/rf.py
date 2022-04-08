@@ -59,7 +59,10 @@ class RF():
         while(running.value == 1):
             if(self.input_receiver.poll()):
                 val = self.input_receiver.recv()
-                self._comport.write(bytes((val+'\0').encode('ascii', 'replace')))
+                if (val == "dump"):
+                    self._log_queue.put(str(self._bytes_received))
+                else:
+                    self._comport.write(bytes((val+'\0').encode('ascii', 'replace')))
             self.read_binary()
         
         self._comport.close()
@@ -123,6 +126,8 @@ class RF():
                 byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is size
                 length = unpack('=B', byte_after_header)[0]
 
+                if(len(self._bytes_received) < 5+length+4):
+                    self._log_queue.put("too_short")
                 if(len(self._bytes_received[5:]) >= length + 4):
                     incomingString = bytearray(self._bytes_received[5:5+length+4]) #length of footer is 4
                     del self._bytes_received[0:5+length+4]
