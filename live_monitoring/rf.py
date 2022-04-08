@@ -14,7 +14,7 @@ class RF():
         self._bytes_received = [] #This list holds recieved bytes and this list is searched through to find packets
         self._history = []
 
-        self._delay_between_packets = 5 #Delay (in ms) if there is not enough data in input buffer to be read into something meaningful
+        self._delay_between_packets = .05 #Delay (in s) if there is not enough data in input buffer to be read into something meaningful
 
         self._transmittion_constants = {
             'TELEM_HEADER': [239, 190, 173, 222], #4 byte heaeder to indicate start of telem frame, 0xDEADBEEF
