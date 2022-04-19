@@ -34,13 +34,21 @@ class commanding_pannel(QtWidgets.QLabel):
         self.standby_button.setStyleSheet("background: lime; font-size: 13px;")
         self.layout.addWidget(self.standby_button, 3, 0)
 
-        self.nav_update_bias_button = QtWidgets.QPushButton("Update Nav Bias")
-        self.nav_update_bias_button.setStyleSheet("font-size: 13px")
-        self.layout.addWidget(self.nav_update_bias_button, 4, 0)
+        self.update_acc_bias_button = QtWidgets.QPushButton("Update Acc Bias")
+        self.update_acc_bias_button.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.update_acc_bias_button, 4, 0)
 
-        self.nav_reset_bias_button = QtWidgets.QPushButton("Reset Nav Bias")
-        self.nav_reset_bias_button.setStyleSheet("font-size: 13px")
-        self.layout.addWidget(self.nav_reset_bias_button, 4, 1)
+        self.update_gyro_bias_button = QtWidgets.QPushButton("Update Gyro Bias")
+        self.update_gyro_bias_button.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.update_gyro_bias_button, 4, 1)
+
+        self.bias_reset_button = QtWidgets.QPushButton("Bias Reset")
+        self.bias_reset_button.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.bias_reset_button, 5, 0)
+
+        self.nav_reset_button = QtWidgets.QPushButton("Nav Reset")
+        self.nav_reset_button.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.nav_reset_button, 5, 1)
 
     def connect_functionality(self):
         self.command.returnPressed.connect(self.send_command_and_clear_text)
@@ -48,8 +56,10 @@ class commanding_pannel(QtWidgets.QLabel):
         self.countdown_button.clicked.connect(lambda: self.send_command("COMMAND: standby_to_countdown"))
         self.standby_button.clicked.connect(lambda: self.send_command("COMMAND: idle_to_standby"))
         self.abort_button.clicked.connect(lambda : self.send_command("COMMAND: ABORT"))
-        self.nav_update_bias_button.clicked.connect(lambda : self.send_command("COMMAND: nav_bias"))
-        self.nav_reset_bias_button.clicked.connect(lambda : self.send_command("COMMAND: nav_reset"))
+        self.update_acc_bias_button.clicked.connect(lambda : self.send_command("COMMAND: acc_bias"))
+        self.update_gyro_bias_button.clicked.connect(lambda : self.send_command("COMMAND: gyro_bias"))
+        self.bias_reset_button.clicked.connect(lambda : self.send_command("COMMAND: bias_reset"))
+        self.nav_reset_button.clicked.connect(lambda : self.send_command("COMMAND: nav_reset"))
 
 
     def send_command(self, command : str):

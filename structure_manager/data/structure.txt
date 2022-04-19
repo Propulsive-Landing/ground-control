@@ -6,4 +6,5 @@ float (4B),3,acc_imu
 float (4B),3,acc_b
 float (4B),3,v_b
 float (4B),3,v_e
+float (4B),1,time
 unsigned int (4B),1,footer
