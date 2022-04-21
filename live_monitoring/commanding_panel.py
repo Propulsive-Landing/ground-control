@@ -10,6 +10,8 @@ class commanding_pannel(QtWidgets.QLabel):
         self.command_signal = commanding_signals().command_signal
         self.layout = QtWidgets.QGridLayout(self)
 
+        self.commanding_interactions = []
+
         self.setup_gui()
         self.connect_functionality()
 
@@ -21,34 +23,44 @@ class commanding_pannel(QtWidgets.QLabel):
 
         self.send_command_button = QtWidgets.QPushButton("Send Command")
         self.layout.addWidget(self.send_command_button, 1, 0, 1, 2)
+        self.commanding_interactions.append(self.send_command_button)
 
         self.abort_button= QtWidgets.QPushButton("ABORT")
         self.abort_button.setStyleSheet("background: red; color: white; font-size: 13px;")
         self.layout.addWidget(self.abort_button, 2, 0, 1, 2)
+        self.commanding_interactions.append(self.abort_button)
 
         self.countdown_button = QtWidgets.QPushButton("Go to countdown")
         self.countdown_button.setStyleSheet("background: lime; font-size: 13px;")
         self.layout.addWidget(self.countdown_button, 3, 1)
+        self.commanding_interactions.append(self.countdown_button)
 
         self.standby_button = QtWidgets.QPushButton("Go to standby")
         self.standby_button.setStyleSheet("background: lime; font-size: 13px;")
         self.layout.addWidget(self.standby_button, 3, 0)
+        self.commanding_interactions.append(self.standby_button)
 
         self.update_acc_bias_button = QtWidgets.QPushButton("Update Acc Bias")
         self.update_acc_bias_button.setStyleSheet("font-size: 13px")
         self.layout.addWidget(self.update_acc_bias_button, 4, 0)
+        self.commanding_interactions.append(self.update_acc_bias_button)
 
         self.update_gyro_bias_button = QtWidgets.QPushButton("Update Gyro Bias")
         self.update_gyro_bias_button.setStyleSheet("font-size: 13px")
         self.layout.addWidget(self.update_gyro_bias_button, 4, 1)
+        self.commanding_interactions.append(self.update_gyro_bias_button)
 
         self.bias_reset_button = QtWidgets.QPushButton("Bias Reset")
         self.bias_reset_button.setStyleSheet("font-size: 13px")
         self.layout.addWidget(self.bias_reset_button, 5, 0)
+        self.commanding_interactions.append(self.bias_reset_button)
 
         self.nav_reset_button = QtWidgets.QPushButton("Nav Reset")
         self.nav_reset_button.setStyleSheet("font-size: 13px")
         self.layout.addWidget(self.nav_reset_button, 5, 1)
+        self.commanding_interactions.append(self.nav_reset_button)
+
+        self.toggle_enabled(False)
 
     def connect_functionality(self):
         self.command.returnPressed.connect(self.send_command_and_clear_text)
@@ -60,6 +72,11 @@ class commanding_pannel(QtWidgets.QLabel):
         self.update_gyro_bias_button.clicked.connect(lambda : self.send_command("COMMAND: gyro_bias"))
         self.bias_reset_button.clicked.connect(lambda : self.send_command("COMMAND: bias_reset"))
         self.nav_reset_button.clicked.connect(lambda : self.send_command("COMMAND: nav_reset"))
+
+
+    def toggle_enabled(self, state: bool):
+        for interaction in self.commanding_interactions:
+            interaction.setEnabled(state)
 
 
     def send_command(self, command : str):

@@ -44,6 +44,9 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.command_panel = commanding_pannel()
         self.layout.addWidget(self.command_panel, 1, 2, 2, 1)
         self.command_panel.command_signal.connect(self.state_management_panel.send_command)
+
+        #connect state to commands
+        self.state_management_panel.signals.connection_monitor.connect(self.command_panel.toggle_enabled)
     
 
     def setup_number_displays(self):
