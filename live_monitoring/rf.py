@@ -91,6 +91,7 @@ class RF():
             #Backlog condition
             self._bytes_received.clear()
             self._log_queue.put("backlog")
+            return
 
         if((self._bytes_received[0:4] == self._transmittion_constants['TELEM_HEADER'] and len(self._bytes_received) >= self._telem_struct_unpacking_values['size_of_telem_struct'])): #When there is a valid header and enough bytes are in the list, data is then read.
             res = bytearray(self._bytes_received[0:self._telem_struct_unpacking_values['size_of_telem_struct']])
@@ -106,13 +107,13 @@ class RF():
                 self.handled_most_recent.value = 0
 
         elif(self._bytes_received[0:4] == self._transmittion_constants['STRING_HEADER'] and len(self._bytes_received) >= 9):
-            byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is size
-            length = unpack('=B', byte_after_header)[0]
+            byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is represents the size of the string 
+            length = unpack('=B', byte_after_header)[0] #unpack byte after header into a number
 
             if(len(self._bytes_received[5:]) >= length + 4):
                 incomingString = bytearray(self._bytes_received[5:5+length+4]) #length of footer is 4
                 del self._bytes_received[0:5+length+4]
-                string_with_struct = '=' + str(length) + 'cI'
+                string_with_struct = '=' + str(length) + 'cI' #unpack string is a series of characters followed by unsigned int
                 parsedString = unpack(string_with_struct, incomingString)
                 
                 if(parsedString[-1:][0] != self._transmittion_constants['FOOTER']):
@@ -124,7 +125,7 @@ class RF():
                         self._log_queue.put(output_string)
                     except:
                         self._log_queue.put("Character value exceeds ascii values" + str(parsedString))
-        else:
+        else: #There was no header so the list must be alligned 
             stra = f'aligned: {self._bytes_received}'
             
             iterations = 0
