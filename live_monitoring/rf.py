@@ -75,66 +75,59 @@ class RF():
 
     #Should be called with high frequency to ensure propper readings
     def read_binary(self):
-        if(self._comport.in_waiting < 5):
+        if(self._comport.in_waiting < 4):
             sleep(self._delay_between_packets)
-        else: #waits until there is data o at least the size of the struct because if there is not that much data, there cannot be a complete struct
+            return
+
+        received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
+        self._bytes_received.extend(list(received)) #adds recieved data to a list
+        self._history.extend(list(received))
+        
+
+        if(len(self._bytes_received) > self._transmittion_constants['backlog_threshold']):
+            #Backlog condition
+            self._bytes_received.clear()
+            self._log_queue.put("backlog")
+
+        if((self._bytes_received[0:4] == self._transmittion_constants['TELEM_HEADER'] and len(self._bytes_received) >= self._telem_struct_unpacking_values['size_of_telem_struct'])): #When there is a valid header and enough bytes are in the list, data is then read.
+            res = bytearray(self._bytes_received[0:self._telem_struct_unpacking_values['size_of_telem_struct']])
+            del self._bytes_received[0:self._telem_struct_unpacking_values['size_of_telem_struct']]
+            frame = unpack(self._telem_struct_unpacking_values['telem_struct_string'], res)
             
-            received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
-            self._bytes_received.extend(list(received)) #adds recieved data to a list
-            self._history.extend(list(received))
             
-            #print(self._bytes_received)
+            if(frame[-1:][0] != self._transmittion_constants['FOOTER']):
+                self._log_queue.put("invalid frame")
+            else:
+                self._telem_frame_queue.put(frame)
+                self._current_telem_frame[:] = frame
+                self.handled_most_recent.value = 0
 
-            if(len(self._bytes_received) > self._transmittion_constants['backlog_threshold']):
-                #Backlog condition
-                self._bytes_received.clear()
-                self._log_queue.put("backlog")
+        elif(self._bytes_received[0:4] == self._transmittion_constants['STRING_HEADER'] and len(self._bytes_received) >= 9):
+            byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is size
+            length = unpack('=B', byte_after_header)[0]
 
-            if(len(self._bytes_received) < 10):
-                return
-            if(self._bytes_received[0:4] != self._transmittion_constants['TELEM_HEADER'] and self._bytes_received[0:4] != self._transmittion_constants['STRING_HEADER']): #if the first four bytes received do not match the struct magic number, then alignment must be done
-                stra = f'aligned: {self._bytes_received}'
+            if(len(self._bytes_received[5:]) >= length + 4):
+                incomingString = bytearray(self._bytes_received[5:5+length+4]) #length of footer is 4
+                del self._bytes_received[0:5+length+4]
+                string_with_struct = '=' + str(length) + 'cI'
+                parsedString = unpack(string_with_struct, incomingString)
                 
-                iterations = 0
-                while(len(self._bytes_received) >= 4 and (self._bytes_received[0:4] != self._transmittion_constants['TELEM_HEADER'] and self._bytes_received[0:4] != self._transmittion_constants['STRING_HEADER'])): #removes from the front of the struct until a head is found
-                    self._bytes_received.pop(0)
-                    iterations += 1
-                stra += f'{iterations} bytes'
-                self._log_queue.put(stra)
-
-            if(len(self._bytes_received) < 4):
-                return
-
-            if((self._bytes_received[0:4] == self._transmittion_constants['TELEM_HEADER'] and len(self._bytes_received) >= self._telem_struct_unpacking_values['size_of_telem_struct'])): #When there is a valid header and enough bytes are in the list, data is then read.
-                res = bytearray(self._bytes_received[0:self._telem_struct_unpacking_values['size_of_telem_struct']])
-                del self._bytes_received[0:self._telem_struct_unpacking_values['size_of_telem_struct']]
-                frame = unpack(self._telem_struct_unpacking_values['telem_struct_string'], res)
-                
-                
-                if(frame[-1:][0] != self._transmittion_constants['FOOTER']):
-                    self._log_queue.put("invalid frame")
+                if(parsedString[-1:][0] != self._transmittion_constants['FOOTER']):
+                    self._log_queue.put("Invalid String, no footer" + str(parsedString))
                 else:
-                    self._telem_frame_queue.put(frame)
-                    self._current_telem_frame[:] = frame
-                    self.handled_most_recent.value = 0
-                    
-
-            if(self._bytes_received[0:4] == self._transmittion_constants['STRING_HEADER'] and len(self._bytes_received) >= 9):
-                byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is size
-                length = unpack('=B', byte_after_header)[0]
-
-                if(len(self._bytes_received[5:]) >= length + 4):
-                    incomingString = bytearray(self._bytes_received[5:5+length+4]) #length of footer is 4
-                    del self._bytes_received[0:5+length+4]
-                    string_with_struct = '=' + str(length) + 'cI'
-                    parsedString = unpack(string_with_struct, incomingString)
-                    
-                    if(parsedString[-1:][0] != self._transmittion_constants['FOOTER']):
-                        self._log_queue.put("Invalid String, no footer" + str(parsedString))
-                    else:
-                        try:
-                            byte_chars = [s.decode() for s in parsedString[:-1]]
-                            output_string = "".join(byte_chars)
-                            self._log_queue.put(output_string)
-                        except:
-                            self._log_queue.put("Character value exceeds ascii values" + str(parsedString))
+                    try:
+                        byte_chars = [s.decode() for s in parsedString[:-1]]
+                        output_string = "".join(byte_chars)
+                        self._log_queue.put(output_string)
+                    except:
+                        self._log_queue.put("Character value exceeds ascii values" + str(parsedString))
+        else:
+            stra = f'aligned: {self._bytes_received}'
+            
+            iterations = 0
+            while(len(self._bytes_received) >= 4 and (self._bytes_received[0:4] != self._transmittion_constants['TELEM_HEADER'] and self._bytes_received[0:4] != self._transmittion_constants['STRING_HEADER'])): #removes from the front of the struct until a head is found
+                self._bytes_received.pop(0)
+                iterations += 1
+            stra += f'{iterations} bytes'
+            self._log_queue.put(stra)
+            return
