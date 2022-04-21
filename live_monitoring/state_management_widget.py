@@ -133,6 +133,12 @@ class state_management_widget(QtWidgets.QWidget):
             self.reset_and_save_graphs_button.setEnabled(True)
             self.reset_and_discard_button.setEnabled(True)
 
+            self.rf.process.join(timeout=1)
+            if not self.rf.process.exitcode:
+                self.rf.process.terminate()
+
+            self.rf.input_transmitter.close()
+
             self.rf = None
         except AttributeError:
             pass

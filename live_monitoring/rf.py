@@ -66,8 +66,8 @@ class RF():
 
     #Starts a separate process that will connect serial port then listen for data
     def start_listen_loop(self, running: Value):
-        process = Process(target=self._listen_loop, args=(running,), name="Data Search Loop")
-        process.start()
+        self.process = Process(target=self._listen_loop, args=(running,), name="Data Search Loop")
+        self.process.start()
 
     def handle_alignment_notice(self, bytes_skipped):
         self._log_queue.put(str(bytes_skipped) + " required to align")
