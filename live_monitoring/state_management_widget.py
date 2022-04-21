@@ -26,7 +26,6 @@ class state_management_widget(QtWidgets.QWidget):
         self.numerical_displays = numerical_displays #List of extension of QLabels
 
         self.signals = state_signals()
-        self.connection_monitor = self.signals.connection_monitor
 
         #connect button
         self.connect_serial_button = QtWidgets.QPushButton("Connect Serial and Listen")
