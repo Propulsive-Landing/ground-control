@@ -55,8 +55,8 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.graphs = []
 
         self.graphs.append(custom_graph_widget(indexes_in_struct=(2, 3, 4), names=('euler_x', 'euler_y', 'euler_z')))
-        self.graphs.append(custom_graph_widget(indexes_in_struct=(11, 12, 13), names=('v_b_x', 'v_b_y', 'v_b_z')))
-        self.graphs.append(custom_graph_widget(indexes_in_struct=(14, 15, 16), names=('v_e_x', 'v_e_y', 'v_e_z')))
+        self.graphs.append(custom_graph_widget(indexes_in_struct=(8,), names=('dt',)))
+        self.graphs.append(custom_graph_widget(indexes_in_struct=(5, 6, 7), names=('v_e_x', 'v_e_y', 'v_e_z')))
 
         self.layout.addWidget(self.graphs[0], 0, 0)
         self.layout.addWidget(self.graphs[1], 0, 1)
@@ -73,6 +73,7 @@ class GroundControlWindow(QtWidgets.QWidget):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
+    app.setStyle('Fusion')
 
     window = GroundControlWindow()
     window.resize(800, 600)

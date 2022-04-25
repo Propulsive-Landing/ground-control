@@ -50,6 +50,14 @@ class commanding_pannel(QtWidgets.QLabel):
         self.nav_reset_button.setStyleSheet("font-size: 13px")
         self.layout.addWidget(self.nav_reset_button, 5, 1)
 
+        self.drop_open = QtWidgets.QPushButton("Open Dropmech")
+        self.drop_open.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.drop_open, 6, 0)
+
+        self.drop_close = QtWidgets.QPushButton("Close Dropmech")
+        self.drop_close.setStyleSheet("font-size: 13px")
+        self.layout.addWidget(self.drop_close, 6, 1)
+
     def connect_functionality(self):
         self.command.returnPressed.connect(self.send_command_and_clear_text)
         self.send_command_button.clicked.connect(self.send_command_and_clear_text)
@@ -60,6 +68,8 @@ class commanding_pannel(QtWidgets.QLabel):
         self.update_gyro_bias_button.clicked.connect(lambda : self.send_command("COMMAND: gyro_bias"))
         self.bias_reset_button.clicked.connect(lambda : self.send_command("COMMAND: bias_reset"))
         self.nav_reset_button.clicked.connect(lambda : self.send_command("COMMAND: nav_reset"))
+        self.drop_open.clicked.connect(lambda : self.send_command("DROPMECH: open"))
+        self.drop_close.clicked.connect(lambda : self.send_command("DROPMECH: close"))
 
 
     def send_command(self, command : str):

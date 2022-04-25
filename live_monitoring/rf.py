@@ -6,7 +6,7 @@ from struct import *
 
 
 class RF():
-    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, handled_most_recent : Value, backlog_threshold = 420, telem_string='=IiffffI'):
+    def __init__(self, port : str, baud : int, current_value: Array, telem_frame_queue: Queue, log_queue: Queue, handled_most_recent : Value, backlog_threshold = 800000, telem_string='=IiffffI'):
 
         self.port = port
         self.baud = baud
@@ -78,26 +78,31 @@ class RF():
 
     #Should be called with high frequency to ensure propper readings
     def read_binary(self):
-        if(self._comport.in_waiting < 4):
+        if(self._comport.in_waiting < 4 and len(self._bytes_received) < 4):
             sleep(self._delay_between_packets)
             return
 
+        
         received = self._comport.read(self._comport.in_waiting) #reads all available data from input buffer into bytearray
         self._bytes_received.extend(list(received)) #adds recieved data to a list
         self._history.extend(list(received))
         
-
+        
         if(len(self._bytes_received) > self._transmittion_constants['backlog_threshold']):
             #Backlog condition
             self._bytes_received.clear()
             self._log_queue.put("backlog")
             return
 
-        if((self._bytes_received[0:4] == self._transmittion_constants['TELEM_HEADER'] and len(self._bytes_received) >= self._telem_struct_unpacking_values['size_of_telem_struct'])): #When there is a valid header and enough bytes are in the list, data is then read.
+        if self._bytes_received[0:4] == self._transmittion_constants['TELEM_HEADER']: #When there is a valid header 
+            
+            if(len(self._bytes_received) < self._telem_struct_unpacking_values['size_of_telem_struct']): #when there are enough bytes
+                return
+            
             res = bytearray(self._bytes_received[0:self._telem_struct_unpacking_values['size_of_telem_struct']])
             del self._bytes_received[0:self._telem_struct_unpacking_values['size_of_telem_struct']]
             frame = unpack(self._telem_struct_unpacking_values['telem_struct_string'], res)
-            
+             
             
             if(frame[-1:][0] != self._transmittion_constants['FOOTER']):
                 self._log_queue.put("invalid frame")
@@ -105,8 +110,12 @@ class RF():
                 self._telem_frame_queue.put(frame)
                 self._current_telem_frame[:] = frame
                 self.handled_most_recent.value = 0
+                
 
-        elif(self._bytes_received[0:4] == self._transmittion_constants['STRING_HEADER'] and len(self._bytes_received) >= 9):
+        elif(self._bytes_received[0:4] == self._transmittion_constants['STRING_HEADER']):
+            if(len(self._bytes_received) < 9):
+                return
+
             byte_after_header = bytearray(self._bytes_received[4:5]) #first four bytes are header, 5th byte is represents the size of the string 
             length = unpack('=B', byte_after_header)[0] #unpack byte after header into a number
 
@@ -125,6 +134,8 @@ class RF():
                         self._log_queue.put(output_string)
                     except:
                         self._log_queue.put("Character value exceeds ascii values" + str(parsedString))
+            else:
+                pass
         else: #There was no header so the list must be alligned 
             stra = f'aligned: {self._bytes_received}'
             
