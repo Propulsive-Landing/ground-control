@@ -2,12 +2,14 @@ import pyqtgraph as pg
 from time import time
 
 class custom_graph_widget(pg.PlotWidget):
-    def __init__(self, indexes_in_struct: tuple, names: tuple):
+    def __init__(self, indexes_in_struct: tuple, names: tuple, start=0):
         super().__init__()
         self.indexes = indexes_in_struct
         self.names = names
 
         self.graphed_values_num = 100
+
+        self.start_time = start
 
         self.values = {}
 
@@ -21,7 +23,7 @@ class custom_graph_widget(pg.PlotWidget):
         
     def update_lines(self):
         for index in self.indexes:
-            self.values[index][0].append(time())
+            self.values[index][0].append(time()-self.start_time)
             self.values[index][1].append(self.current_frame[index])
 
             self.values[index][2].setData(self.values[index][0][-self.graphed_values_num:], self.values[index][1][-self.graphed_values_num:])

@@ -1,6 +1,7 @@
 from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
 from pyqtgraph import exporters
+from time import time
 from multiprocessing import Array, Value, Queue
 import struct
 
@@ -15,7 +16,7 @@ class state_signals(QtCore.QObject):
     clear_output = QtCore.Signal()
 
 class state_management_widget(QtWidgets.QWidget):
-    def __init__(self, output, file_management_panel : file_management_widget, thread_pool, graphs, numerical_displays, transmitting_buttons = []) -> None:
+    def __init__(self, output, file_management_panel : file_management_widget, thread_pool, graphs, numerical_displays, start) -> None:
         super().__init__()
         self.layout = QtWidgets.QFormLayout(self)
 
@@ -24,6 +25,8 @@ class state_management_widget(QtWidgets.QWidget):
         self.thread_pool = thread_pool 
         self.graphs = graphs #list of graphs type: pg.PlotWidget
         self.numerical_displays = numerical_displays #List of extension of QLabels
+
+        self.start_time = start
 
         self.signals = state_signals()
 
@@ -177,5 +180,6 @@ class state_management_widget(QtWidgets.QWidget):
     def send_command(self, command: str):
         try:
             self.rf.input_transmitter.send(command)
+            self.rf._log_queue.put("time: " + str(time() - self.start_time) + " sent: " + command)
         except AttributeError:
             self.output("Serial not Connected")

@@ -1,6 +1,7 @@
 import sys
 import pyqtgraph as pg
 from PySide6 import QtCore, QtWidgets
+from time import time
 
 from state_management_widget import state_management_widget
 from file_management_widget import file_management_widget
@@ -21,6 +22,8 @@ class GroundControlWindow(QtWidgets.QWidget):
         self._thread_pool = QtCore.QThreadPool.globalInstance()
         
         pg.setConfigOption('background', 'w')
+         
+        self.program_start_time = time()
         
         self.setup_number_displays()
         self.setup_graphs()
@@ -36,7 +39,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.layout.addWidget(self.console, 1, 1, 2, 1)
 
         #State management
-        self.state_management_panel = state_management_widget(self.output, self.file_management_panel, self._thread_pool, self.graphs, self.numerical_displays)
+        self.state_management_panel = state_management_widget(self.output, self.file_management_panel, self._thread_pool, self.graphs, self.numerical_displays, self.program_start_time)
         self.layout.addWidget(self.state_management_panel, 2, 0)
         self.state_management_panel.signals.clear_output.connect(self.clear_console)
 
@@ -54,9 +57,9 @@ class GroundControlWindow(QtWidgets.QWidget):
     def setup_graphs(self):
         self.graphs = []
 
-        self.graphs.append(custom_graph_widget(indexes_in_struct=(2, 3, 4), names=('euler_x', 'euler_y', 'euler_z')))
-        self.graphs.append(custom_graph_widget(indexes_in_struct=(8,), names=('dt',)))
-        self.graphs.append(custom_graph_widget(indexes_in_struct=(5, 6, 7), names=('v_e_x', 'v_e_y', 'v_e_z')))
+        self.graphs.append(custom_graph_widget(indexes_in_struct=(2, 3, 4), names=('euler_x', 'euler_y', 'euler_z'), start=self.program_start_time))
+        self.graphs.append(custom_graph_widget(indexes_in_struct=(8,), names=('dt',), start=self.program_start_time))
+        self.graphs.append(custom_graph_widget(indexes_in_struct=(5, 6, 7), names=('v_e_x', 'v_e_y', 'v_e_z'), start=self.program_start_time))
 
         self.layout.addWidget(self.graphs[0], 0, 0)
         self.layout.addWidget(self.graphs[1], 0, 1)
