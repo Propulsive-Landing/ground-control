@@ -1,4 +1,5 @@
 import pyqtgraph as pg
+from time import time
 
 class custom_graph_widget(pg.PlotWidget):
     def __init__(self, indexes_in_struct: tuple, names: tuple):
@@ -15,7 +16,7 @@ class custom_graph_widget(pg.PlotWidget):
         
         self.current_frame = current_frame
         for count, index in enumerate(self.indexes):
-            self.values[index] = ([0], [0], self.plot([0], [0], pen=(count, len(self.indexes)), name=self.names[count]))
+            self.values[index] = ([], [], self.plot([], [], pen=(count, len(self.indexes)), name=self.names[count]))
         
         
     def update_lines(self):
