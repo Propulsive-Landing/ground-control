@@ -106,8 +106,8 @@ class state_management_widget(QtWidgets.QWidget):
         self.looping_for_data.value = 1
         self.rf.start_listen_loop(self.looping_for_data)
 
-        logging = log_handler(self.log_path, self._data['log_queue'])
-        telem = telem_frame_handler(self.data_path, self._data['frame_queue'])
+        logging = log_handler(self.log_path, self._data['log_queue'], self.start_time)
+        telem = telem_frame_handler(self.data_path, self._data['frame_queue'], self.start_time)
 
         logging.signals.log_signal.connect(self.output)
         telem.signals.telem_signal.connect(self.output)
@@ -180,6 +180,6 @@ class state_management_widget(QtWidgets.QWidget):
     def send_command(self, command: str):
         try:
             self.rf.input_transmitter.send(command)
-            self.rf._log_queue.put("time: " + str(time() - self.start_time) + " sent: " + command)
+            self.rf._log_queue.put("sent: " + command)
         except AttributeError:
             self.output("Serial not Connected")

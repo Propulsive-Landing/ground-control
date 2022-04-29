@@ -72,7 +72,8 @@ class file_management_widget(QtWidgets.QWidget):
                                 for i in range(0, int(line.split(',')[1])):
                                     temp_header += line.split(',')[2] + '[' + str(i) + '], '
                             else:
-                                temp_header += line.split(',')[2] + ', '
+                                temp_header += line.split(',')[2] + ','
+                    temp_header += "time" 
                 except:
                     print("ERR")
             self.header = temp_header
