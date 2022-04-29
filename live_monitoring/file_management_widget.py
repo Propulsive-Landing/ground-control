@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
 from pathlib import Path
-from os import mkdir
+from os import mkdir, path
 from shutil import rmtree
 
 
@@ -40,12 +40,12 @@ class file_management_widget(QtWidgets.QWidget):
         select_output_directory_button.clicked.connect(self._get_output_location)
 
     def _set_to_default(self):
-        if Path.is_dir(Path("./runs")):
-            self.output_directory = Path("./runs")
+        if Path.is_dir(Path(__file__).parent.parent.joinpath("./runs")):
+            self.output_directory = Path(__file__).parent.parent.joinpath("./runs").absolute()
             self.find_next_available_save_location_in_current_directory()
 
-        if Path.is_dir(Path("./structure_manager/data")):
-           self.struct_directory = Path("./structure_manager/data")
+        if Path.is_dir(Path(__file__).parent.parent.joinpath("./structure_manager/data")):
+           self.struct_directory = Path(__file__).parent.parent.joinpath("./structure_manager/data").absolute()
            self._update_struct_from_directory()
 
     
