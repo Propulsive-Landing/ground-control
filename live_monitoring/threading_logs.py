@@ -28,7 +28,7 @@ class log_handler(QtCore.QRunnable):
                 if(message == 'STOP'):
                     break
         
-                stamped = f"{str(message)} : {time}".format(time=(time()-self.start_time))
+                stamped = str(message) + " time: {:.2f}".format(time() - self.start_time)
 
                 print(stamped)
                 file.write(stamped)
