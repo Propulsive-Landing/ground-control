@@ -33,10 +33,22 @@ class file_management_widget(QtWidgets.QWidget):
         self.output_location = None
         self.header = None
 
+        self._set_to_default()
+
         self.manual_struct_string.textEdited.connect(self._update_struct_string)
         select_struct_button.clicked.connect(self._get_struct)
         select_output_directory_button.clicked.connect(self._get_output_location)
 
+    def _set_to_default(self):
+        if Path.is_dir(Path("./runs")):
+            self.output_directory = Path("./runs")
+            self.find_next_available_save_location_in_current_directory()
+
+        if Path.is_dir(Path("./structure_manager/data")):
+           self.struct_directory = Path("./structure_manager/data")
+           self._update_struct_from_directory()
+
+    
     def _get_output_location(self):
         self.output_directory = Path(QtWidgets.QFileDialog.getExistingDirectory(self, "Choose Output Location"))
 
@@ -55,10 +67,9 @@ class file_management_widget(QtWidgets.QWidget):
         self.output_location = temp_location
         self.show_output_directory.setText(str(self.output_location))
 
-    def _get_struct(self):
-        struct_directory = Path(QtWidgets.QFileDialog.getExistingDirectory(self, "Choose Directory with Struct Defintion"))
-        structure_file = struct_directory.joinpath('./structure.txt')
-        struct_string_file = struct_directory.joinpath('./struct_string.txt')
+    def _update_struct_from_directory(self):
+        structure_file = self.struct_directory.joinpath('./structure.txt')
+        struct_string_file = self.struct_directory.joinpath('./struct_string.txt')
 
         if(structure_file.is_file()):
             temp_header = ''
@@ -87,6 +98,10 @@ class file_management_widget(QtWidgets.QWidget):
             self.struct_string = file.readline().strip()
         
         self.manual_struct_string.setText(self.struct_string)
+
+    def _get_struct(self):
+        self.struct_directory = Path(QtWidgets.QFileDialog.getExistingDirectory(self, "Choose Directory with Struct Defintion"))
+        self._update_struct_from_directory()
 
     def _update_struct_string(self):
         self.struct_string = self.manual_struct_string.text()
