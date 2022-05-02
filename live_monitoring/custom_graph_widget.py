@@ -7,7 +7,7 @@ class custom_graph_widget(pg.PlotWidget):
         self.indexes = indexes_in_struct
         self.names = names
 
-        self.graphed_values_num = 100
+        self.graphed_values_num = 40
 
         self.start_time = start
 
