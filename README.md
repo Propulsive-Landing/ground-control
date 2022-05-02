@@ -22,12 +22,14 @@ This repository contains scripts and resources to monitor and control the launch
 
  1. Navigate to the `live_monitoring` folder in your terminal
  2. Run the command `python3 gui.py` (A gui should appear)
- 3. Click the `Select Struct Defintion Directory` button to select where the incoming structure is defined. (It will almost always be in `./structure_manager/data` folder)
- 4. Click the `Select Output Directory` to determine where the output folder will be generated.
- 5. Enter the XBee dongle port name into the GUI (e.g. "COM11")
- 6. Click `Connect Serial and Listen` to begin listening for data
- 7. Click `Stop Listening and Save` to stop listening (cannot be resumed)
- 8. Click `Reset and Save Graphs` when you are done looking at your graphs and want to begin another trial.
+ 3. If default values are not automatically filled in:
+     1. Click the `Select Struct Defintion Directory` button to select where the incoming structure is defined. (It will almost always be in `./structure_manager/data` folder)
+     2. Click the `Select Output Directory` to determine where the output folder will be generated.
+ 4. Enter the XBee dongle port name into the GUI (e.g. "COM11")
+ 5. Click `Connect Serial and Listen` to begin listening for data
+ 6. Click `Stop Listening and Save` to stop listening (cannot be resumed)
+ 7. Click `Reset and Save Graphs` when you are done looking at your graphs and want to begin another trial.
+     * `Reset and Discard` will delete all files related to most recent run
   
   ## Structure Synchronization
   
