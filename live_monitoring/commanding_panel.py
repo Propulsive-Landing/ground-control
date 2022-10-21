@@ -3,7 +3,7 @@ from PySide6 import QtCore, QtWidgets
 class commanding_signals(QtCore.QObject):
     command_signal = QtCore.Signal(str)
 
-class commanding_pannel(QtWidgets.QLabel):
+class commanding_panel(QtWidgets.QLabel):
     def __init__(self):
         super().__init__()
         
@@ -68,9 +68,18 @@ class commanding_pannel(QtWidgets.QLabel):
         self.update_gyro_bias_button.clicked.connect(lambda : self.send_command("COMMAND: gyro_bias"))
         self.bias_reset_button.clicked.connect(lambda : self.send_command("COMMAND: bias_reset"))
         self.nav_reset_button.clicked.connect(lambda : self.send_command("COMMAND: nav_reset"))
-        self.drop_open.clicked.connect(lambda : self.send_command("DROPMECH: open"))
+        self.drop_open.clicked.connect(lambda : self.open_dropmech())
         self.drop_close.clicked.connect(lambda : self.send_command("DROPMECH: close"))
 
+
+    def open_dropmech(self):
+        try:
+            if(self.current[1] > 1):
+                self.send_command("DROPMECH: open")
+            else:
+                self.print("not correct mode")
+        except:
+            self.send_command("")
 
     def send_command(self, command : str):
         self.command_signal.emit(command)

@@ -6,6 +6,7 @@ from multiprocessing import Array, Value, Queue
 import struct
 
 from file_management_widget import file_management_widget
+
 import gui_util
 from threading_logs import telem_frame_handler, log_handler
 from rf import RF
@@ -167,6 +168,8 @@ class state_management_widget(QtWidgets.QWidget):
         self.graphed_most_recent_value = Value('B')
         self.graphed_most_recent_value.value = 1
 
+        self.command_panel.current = self._data['current_frame']
+
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
         self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], handled_most_recent=self.graphed_most_recent_value, telem_string=telem_frame_string)
@@ -175,6 +178,8 @@ class state_management_widget(QtWidgets.QWidget):
             graph.setup_connection(self._data['current_frame'])
         for number in self.numerical_displays:
             number.setup_connection(self._data['current_frame'])
+
+        
             
     
     def send_command(self, command: str):

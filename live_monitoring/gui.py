@@ -7,7 +7,7 @@ from state_management_widget import state_management_widget
 from file_management_widget import file_management_widget
 from custom_graph_widget import custom_graph_widget
 from custom_number_display import custom_number_display
-from commanding_panel import commanding_pannel
+from commanding_panel import commanding_panel
 
 
 #https://www.pythonguis.com/tutorials/plotting-pyqtgraph/
@@ -44,9 +44,10 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.state_management_panel.signals.clear_output.connect(self.clear_console)
 
         #Communication output
-        self.command_panel = commanding_pannel()
+        self.command_panel = commanding_panel()
         self.layout.addWidget(self.command_panel, 1, 2, 2, 1)
         self.command_panel.command_signal.connect(self.state_management_panel.send_command)
+        self.state_management_panel.command_panel = self.command_panel
     
 
     def setup_number_displays(self):
