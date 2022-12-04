@@ -2,6 +2,7 @@ import sys
 import pyqtgraph as pg
 from PySide6 import QtCore, QtWidgets
 from time import time
+import qdarkstyle
 
 from state_management_widget import state_management_widget
 from file_management_widget import file_management_widget
@@ -20,14 +21,20 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.setWindowTitle("AIAA PL Ground Control")
         self.layout = QtWidgets.QGridLayout(self)
         self._thread_pool = QtCore.QThreadPool.globalInstance()
+
+        self.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyside6'))
         
-        pg.setConfigOption('background', 'w')
+        pg.setConfigOption('background', 'black')
          
         self.program_start_time = time()
         
         self.setup_number_displays()
         self.setup_graphs()
         self.init_widgets()
+
+    def keyPressEvent(self, event):
+        if event.key() == 32:
+            self.command_panel.send_command("COMMAND: ABORT")
 
     def init_widgets(self):
         #File input

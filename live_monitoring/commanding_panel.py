@@ -27,11 +27,11 @@ class commanding_panel(QtWidgets.QLabel):
         self.layout.addWidget(self.abort_button, 2, 0, 1, 2)
 
         self.countdown_button = QtWidgets.QPushButton("Go to countdown")
-        self.countdown_button.setStyleSheet("background: lime; font-size: 13px;")
+        self.countdown_button.setStyleSheet("background: green; font-size: 13px;")
         self.layout.addWidget(self.countdown_button, 3, 1)
 
         self.standby_button = QtWidgets.QPushButton("Go to standby")
-        self.standby_button.setStyleSheet("background: lime; font-size: 13px;")
+        self.standby_button.setStyleSheet("background: green; font-size: 13px;")
         self.layout.addWidget(self.standby_button, 3, 0)
 
         self.update_acc_bias_button = QtWidgets.QPushButton("Update Acc Bias")
