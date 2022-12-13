@@ -4,7 +4,7 @@
 
 This repository contains scripts and resources to monitor and control the launching of our rocket.
 
-## Display
+## Display layout
 
 <a href="https://uconnpl.weebly.com/avionics.html">
  <img src="https://user-images.githubusercontent.com/72774655/207448314-8606bf1a-ea82-4008-ab17-d0999dbd2d63.png" height="500px">
