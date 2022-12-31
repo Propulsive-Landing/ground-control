@@ -1,0 +1,14 @@
+[0]telemetry initialized time: 414.89
+[0]program start time: 414.89
+[0]TVC initialized time: 414.89
+[0]sensors initialized time: 416.56
+[420]All values match time: 416.69
+[0]timing set, starting PL_IDLE time: 416.69
+sent: COMMAND: idle_to_standby time: 418.74
+[424]STANDBY START time: 418.82
+sent: COMMAND: standby_to_countdown time: 436.17
+[3884]COUNTDOWN START time: 436.28
+[3886]IGNITION time: 436.29
+[4872]SAFING time: 441.31
+[4872]SD transfer start time: 441.43
+[4872]Rocket SAFE time: 441.43

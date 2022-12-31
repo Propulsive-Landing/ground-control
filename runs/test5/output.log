@@ -1,0 +1,11 @@
+[0]telemetry initialized time: 1299.96
+[0]program start time: 1299.96
+[0]TVC initialized time: 1299.97
+[0]sensors initialized time: 1301.66
+[420]All values match time: 1301.79
+[0]timing set, starting PL_IDLE time: 1301.79
+sent: COMMAND: idle_to_standby time: 1306.87
+[1036]STANDBY START time: 1306.98
+sent: COMMAND: standby_to_countdown time: 1322.41
+[4117]COUNTDOWN START time: 1322.57
+[4119]IGNITION time: 1322.58
