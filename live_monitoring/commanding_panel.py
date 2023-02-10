@@ -30,7 +30,7 @@ class commanding_panel(QtWidgets.QLabel):
         self.countdown_button.setStyleSheet("background: green; font-size: 13px;")
         self.layout.addWidget(self.countdown_button, 3, 1)
 
-        self.standby_button = QtWidgets.QPushButton("Go to standby")
+        self.standby_button = QtWidgets.QPushButton("Nav start")
         self.standby_button.setStyleSheet("background: green; font-size: 13px;")
         self.layout.addWidget(self.standby_button, 3, 0)
 
