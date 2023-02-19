@@ -8,6 +8,7 @@ pyqtgraph = "*"
 pyside6 = "*"
 qdarkstyle = "*"
 serial = "*"
+tk = "*"
 
 [dev-packages]
 
