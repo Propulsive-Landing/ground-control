@@ -21,10 +21,8 @@ This repository contains scripts and resources to monitor and control the launch
 
 ## First Time Initialization
  1. Install python3 from [python.org](https://www.python.org/downloads/)
- 3. Run the command `python3 -m pip install pipenv` 
- 4. Run the command `python3 -m pipenv install`
- 
- Note. Replace `python3` with `py` or `python` depending on your python installation.
+ 2. Run the command `python3 -m pip install pipenv` 
+ 3. Run the command `python3 -m pipenv install`
 
 ## Test / Launch Usage
 
