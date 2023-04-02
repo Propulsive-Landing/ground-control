@@ -7,7 +7,9 @@ class commanding_panel(QtWidgets.QLabel):
     def __init__(self):
         super().__init__()
         
-        self.command_signal = commanding_signals().command_signal
+        self.commands = commanding_signals() # Reference MUST be kept to prevent object deletion.
+        self.command_signal = self.commands.command_signal
+
         self.layout = QtWidgets.QGridLayout(self)
 
         self.setup_gui()
@@ -34,17 +36,17 @@ class commanding_panel(QtWidgets.QLabel):
         self.standby_button.setStyleSheet("background: green; font-size: 13px;")
         self.layout.addWidget(self.standby_button, 3, 0)
 
-        self.update_acc_bias_button = QtWidgets.QPushButton("Update Acc Bias")
-        self.update_acc_bias_button.setStyleSheet("font-size: 13px")
-        self.layout.addWidget(self.update_acc_bias_button, 4, 0)
+        # self.update_acc_bias_button = QtWidgets.QPushButton("Update Acc Bias")
+        # self.update_acc_bias_button.setStyleSheet("font-size: 13px")
+        # self.layout.addWidget(self.update_acc_bias_button, 4, 0)
 
-        self.update_gyro_bias_button = QtWidgets.QPushButton("Update Gyro Bias")
-        self.update_gyro_bias_button.setStyleSheet("font-size: 13px")
-        self.layout.addWidget(self.update_gyro_bias_button, 4, 1)
+        # self.update_gyro_bias_button = QtWidgets.QPushButton("Update Gyro Bias")
+        # self.update_gyro_bias_button.setStyleSheet("font-size: 13px")
+        # self.layout.addWidget(self.update_gyro_bias_button, 4, 1)
 
-        self.bias_reset_button = QtWidgets.QPushButton("Bias Reset")
-        self.bias_reset_button.setStyleSheet("font-size: 13px")
-        self.layout.addWidget(self.bias_reset_button, 5, 0)
+        # self.bias_reset_button = QtWidgets.QPushButton("Bias Reset")
+        # self.bias_reset_button.setStyleSheet("font-size: 13px")
+        # self.layout.addWidget(self.bias_reset_button, 5, 0)
 
         self.nav_reset_button = QtWidgets.QPushButton("Nav Reset")
         self.nav_reset_button.setStyleSheet("font-size: 13px")
@@ -64,9 +66,9 @@ class commanding_panel(QtWidgets.QLabel):
         self.countdown_button.clicked.connect(lambda: self.send_command("COMMAND: standby_to_countdown"))
         self.standby_button.clicked.connect(lambda: self.send_command("COMMAND: idle_to_standby"))
         self.abort_button.clicked.connect(lambda : self.send_command("COMMAND: ABORT"))
-        self.update_acc_bias_button.clicked.connect(lambda : self.send_command("COMMAND: acc_bias"))
-        self.update_gyro_bias_button.clicked.connect(lambda : self.send_command("COMMAND: gyro_bias"))
-        self.bias_reset_button.clicked.connect(lambda : self.send_command("COMMAND: bias_reset"))
+        # self.update_acc_bias_button.clicked.connect(lambda : self.send_command("COMMAND: acc_bias"))
+        # self.update_gyro_bias_button.clicked.connect(lambda : self.send_command("COMMAND: gyro_bias"))
+        # self.bias_reset_button.clicked.connect(lambda : self.send_command("COMMAND: bias_reset"))
         self.nav_reset_button.clicked.connect(lambda : self.send_command("COMMAND: nav_reset"))
         self.drop_open.clicked.connect(lambda : self.open_dropmech())
         self.drop_close.clicked.connect(lambda : self.send_command("DROPMECH: close"))
