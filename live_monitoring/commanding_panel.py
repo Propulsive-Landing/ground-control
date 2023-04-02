@@ -63,8 +63,8 @@ class commanding_panel(QtWidgets.QLabel):
     def connect_functionality(self):
         self.command.returnPressed.connect(self.send_command_and_clear_text)
         self.send_command_button.clicked.connect(self.send_command_and_clear_text)
-        self.countdown_button.clicked.connect(lambda: self.send_command("COMMAND: standby_to_countdown"))
-        self.standby_button.clicked.connect(lambda: self.send_command("COMMAND: idle_to_standby"))
+        self.countdown_button.clicked.connect(lambda: self.send_command("COMMAND: countdown"))
+        self.standby_button.clicked.connect(lambda: self.send_command("COMMAND: nav_start"))
         self.abort_button.clicked.connect(lambda : self.send_command("COMMAND: ABORT"))
         # self.update_acc_bias_button.clicked.connect(lambda : self.send_command("COMMAND: acc_bias"))
         # self.update_gyro_bias_button.clicked.connect(lambda : self.send_command("COMMAND: gyro_bias"))
