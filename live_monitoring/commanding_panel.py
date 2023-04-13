@@ -76,10 +76,10 @@ class commanding_panel(QtWidgets.QLabel):
 
     def open_dropmech(self):
         try:
-            if(self.current[1] > 1):
+            if(self.current[1] >= 4):
                 self.send_command("DROPMECH: open")
             else:
-                self.print("not correct mode")
+                print("not correct mode")
         except:
             self.send_command("")
 
