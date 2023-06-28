@@ -1,0 +1,19 @@
+sent: DROPMECH: open time: 4060.24
+sent: DROPMECH: close time: 4076.69
+sent: COMMAND: string_test time: 4205.78
+[1201] HELLO worLd time: 4205.89
+sent: COMMAND: add 3 4 time: 4213.98
+[1234] 7 time: 4214.10
+sent: COMMAND: add 3 4 time: 4244.28
+[1234] 7 time: 4244.41
+sent: COMMAND: add 1 2 time: 4263.07
+[1234] 3 time: 4263.17
+sent: COMMAND: nav_start time: 4299.31
+[62080] Mode to : STANDBY time: 4299.41
+sent: COMMAND: nav_reset time: 4308.63
+sent: COMMAND: countdown time: 4327.85
+[67786] Mode to : COUNTDOWN time: 4327.97
+sent: COMMAND: nav_reset time: 4332.41
+sent: DROPMECH: open time: 4340.10
+[70284] Mode to : FREE FALL time: 4340.47
+[70346] IGNITION time: 4340.78

@@ -1,0 +1,48 @@
+[0] hello world time: 203.60
+[0] program start time: 204.10
+sent: COMMAND: string_test time: 210.39
+sent: COMMAND: string_test time: 211.58
+sent: COMMAND: string_test time: 212.61
+[1201] HELLO worLd time: 212.72
+sent: COMMAND: string_test time: 214.87
+[1201] HELLO worLd time: 214.97
+sent: COMMAND: string_test time: 300.80
+[1201] HELLO worLd time: 300.87
+sent: DROPMECH: open time: 366.45
+sent: COMMAND: string_test time: 370.10
+[1201] HELLO worLd time: 370.22
+sent: dropmech: open time: 377.87
+sent: dropmech: close time: 386.77
+sent: DROPMECH: close time: 393.06
+sent: COMMAND: string_test time: 423.93
+[1201] HELLO worLd time: 424.05
+sent: COMMAND: string_test time: 470.06
+[1201] HELLO worLd time: 470.13
+sent: COMMAND: string_test time: 530.27
+[1201] HELLO worLd time: 530.36
+sent: COMMAND: string_test time: 597.17
+[1201] HELLO worLd time: 597.28
+sent: COMMAND: string_test time: 737.74
+[1201] HELLO worLd time: 737.88
+sent: COMMAND: string_test time: 851.13
+[1201] HELLO worLd time: 851.26
+sent: COMMAND: nav_start time: 888.58
+[136205] Mode to : STANDBY time: 888.65
+sent: COMMAND: nav_start time: 888.97
+[136291] Mode to : STANDBY time: 889.09
+sent: COMMAND: nav_start time: 890.14
+[136513] Mode to : STANDBY time: 890.20
+sent: COMMAND: nav_start time: 891.13
+[136712] Mode to : STANDBY time: 891.20
+sent: COMMAND: nav_reset time: 895.73
+sent: COMMAND: nav_reset time: 899.09
+sent: COMMAND: countdown time: 903.20
+[139118] Mode to : COUNTDOWN time: 903.36
+sent: COMMAND: string_test time: 911.68
+[1201] HELLO worLd time: 911.79
+sent: COMMAND: nav_reset time: 916.66
+sent: DROPMECH: open time: 918.28
+[142161] Mode to : FREE FALL time: 918.59
+[142183] IGNITION time: 918.64
+aligned: [113, 162, 85, 64, 255, 193, 177, 246, 61, 5, 221, 81, 189, 0, 0, 164, 59, 222, 250, 254, 202]18 bytes time: 921.13
+aligned: [250, 254, 202, 239, 190, 173, 222, 8, 0, 38, 229, 166, 66, 21, 130, 54, 194, 86, 186, 16, 195, 164, 28, 173, 192, 131, 50, 57, 64, 25, 120, 41, 193, 97, 165, 2, 62, 61, 211, 239, 60, 0, 0, 164, 59, 222, 250, 254, 202]3 bytes time: 921.25

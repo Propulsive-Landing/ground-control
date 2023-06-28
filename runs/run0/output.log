@@ -1,0 +1,31 @@
+[0] program start time: 210.71
+sent: COMMAND: string_test time: 219.75
+sent: COMMAND: string_test time: 221.95
+[1201] HELLO worLd time: 222.03
+sent: DROPMECH: open time: 315.52
+sent: DROPMECH: close time: 348.42
+sent: COMMAND: string_test time: 492.29
+[1201] HELLO worLd time: 492.40
+sent: COMMAND: string_test time: 497.81
+sent: COMMAND: string_test time: 499.93
+sent: COMMAND: string_test time: 503.69
+[1201] HELLO worLd time: 503.80
+sent: COMMAND: string_test time: 508.18
+sent: COMMAND: string_test time: 509.84
+[1201] HELLO worLd time: 509.98
+sent: COMMAND: string_test time: 515.12
+[1201] HELLO worLd time: 515.21
+sent: COMMAND: string_test time: 517.11
+[1201] HELLO worLd time: 517.22
+sent: COMMAND: string_test time: 523.14
+[1201] HELLO worLd time: 523.20
+sent: COMMAND: nav_start time: 555.61
+[68823] Mode to : STANDBY time: 555.74
+sent: COMMAND: nav_reset time: 566.15
+sent: COMMAND: countdown time: 609.77
+[79630] Mode to : COUNTDOWN time: 609.85
+sent: COMMAND: nav_reset time: 613.15
+sent: COMMAND: nav_reset time: 615.07
+sent: DROPMECH: open time: 617.83
+[81275] Mode to : FREE FALL time: 618.07
+[81309] IGNITION time: 618.24
