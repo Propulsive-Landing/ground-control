@@ -7,7 +7,8 @@ class commanding_panel(QtWidgets.QLabel):
     def __init__(self):
         super().__init__()
         
-        self.command_signal = commanding_signals().command_signal
+        self.commanding_signals = commanding_signals()
+        self.command_signal = self.commanding_signals.command_signal
         self.layout = QtWidgets.QGridLayout(self)
 
         self.setup_gui()
