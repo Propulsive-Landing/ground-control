@@ -87,5 +87,5 @@ class commanding_panel(QtWidgets.QLabel):
         self.command_signal.emit(command)
 
     def send_command_and_clear_text(self):
-        self.send_command(self.command.text())
+        self.send_command(self.command.text() + "\n")
         self.command.setText("")
