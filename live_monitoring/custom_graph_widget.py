@@ -24,6 +24,8 @@ class custom_graph_widget(pg.PlotWidget):
     def update_lines(self):
         for index in self.indexes:
             self.values[index][0].append(time()-self.start_time)
+            print("CurrentFrame")
+            print(self.current_frame)
             self.values[index][1].append(self.current_frame[index])
 
             self.values[index][2].setData(self.values[index][0][-self.graphed_values_num:], self.values[index][1][-self.graphed_values_num:])

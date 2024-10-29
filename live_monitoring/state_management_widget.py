@@ -2,8 +2,7 @@ from PySide6 import QtCore, QtWidgets
 import pyqtgraph as pg
 from pyqtgraph import exporters
 from time import time
-from multiprocessing import Array, Value, Queue
-import struct
+from multiprocessing import Array, Value, Queue, Manager
 
 from file_management_widget import file_management_widget
 
@@ -26,6 +25,8 @@ class state_management_widget(QtWidgets.QWidget):
         self.thread_pool = thread_pool 
         self.graphs = graphs #list of graphs type: pg.PlotWidget
         self.numerical_displays = numerical_displays #List of extension of QLabels
+
+        self.manager = Manager()
 
         self.start_time = start
 
@@ -102,7 +103,6 @@ class state_management_widget(QtWidgets.QWidget):
         self._start_animation_timer()
             
         self.data_path, self.log_path = self.file_management_panel.create_files()
-        self.rf._telem_struct_unpacking_values['telem_struct_string'] = self.file_management_panel.struct_string
 
         self.looping_for_data.value = 1
         self.rf.start_listen_loop(self.looping_for_data)
@@ -157,13 +157,10 @@ class state_management_widget(QtWidgets.QWidget):
 
     #does not connect the port, just passses the info to the RF class so it can be used later
     def initialize_rf(self, port : str, baud : int):
-        telem_frame_string = self.file_management_panel.struct_string
-        telem_attribute_num = len(struct.unpack(telem_frame_string,bytearray(struct.calcsize(telem_frame_string)*[0])))
-
         self._data = {
-            'current_frame': Array('d', telem_attribute_num), #Most recent data frame received
-            'log_queue' : Queue(), #queue of all logs
-            'frame_queue': Queue() #queue of all data frames received
+            'current_frame': self.manager.list(), #Most recent data frame received
+            'log_queue' : self.manager.Queue(), #queue of all logs
+            'frame_queue': self.manager.Queue() #queue of all data frames received
         }
         self.graphed_most_recent_value = Value('B')
         self.graphed_most_recent_value.value = 1
@@ -172,7 +169,7 @@ class state_management_widget(QtWidgets.QWidget):
 
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
-        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], handled_most_recent=self.graphed_most_recent_value, telem_string=telem_frame_string)
+        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], handled_most_recent=self.graphed_most_recent_value)
 
         for graph in self.graphs:
             graph.setup_connection(self._data['current_frame'])
