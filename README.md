@@ -21,12 +21,12 @@ This repository contains scripts and resources to monitor and control the launch
 
 ## First Time Initialization
  1. Install python3 from [python.org](https://www.python.org/downloads/)
- 2. Run the command `python3 -m pip install pipenv` 
- 3. Run the command `python3 -m pipenv install`
+ 2. Install `poetry`: follow [poetry installation](https://python-poetry.org/docs/#installing-with-the-official-installer).
+ 3. Install dependencies: `poetry install`
 
 ## Test / Launch Usage
 
- 1. Run the command `python3 -m pipenv run python3 live_monitoring/gui.py` (A gui should appear)
+ 1. Run the command `poetry run python3 live_monitoring/gui.py` (A gui should appear)
  2. If default values are not automatically filled in:
      1. Click the `Select Struct Defintion Directory` button to select where the incoming structure is defined. (It will almost always be in `./structure_manager/data` folder)
      2. Click the `Select Output Directory` to determine where the output folder will be generated.
