@@ -15,7 +15,9 @@ dependencies = [
     "pyqtgraph (>=0.13.7,<0.14.0)"
 ]
 
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false

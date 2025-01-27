@@ -27,6 +27,7 @@ This repository contains scripts and resources to monitor and control the launch
 ## Test / Launch Usage
 
  1. Run the command `poetry run python3 live_monitoring/gui.py` (A gui should appear)
+    - If this command fails, try replacing `python3` with `python`, `py`, `python3.12`, etc. 
  2. If default values are not automatically filled in:
      1. Click the `Select Struct Defintion Directory` button to select where the incoming structure is defined. (It will almost always be in `./structure_manager/data` folder)
      2. Click the `Select Output Directory` to determine where the output folder will be generated.
