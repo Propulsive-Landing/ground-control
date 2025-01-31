@@ -1,6 +1,7 @@
 import pyqtgraph as pg
 from time import time
 
+#TODO. FIX FOR JSON DATA. Currently expecting binary data and therefore crashing.
 class custom_graph_widget(pg.PlotWidget):
     def __init__(self, indexes_in_struct: tuple, names: tuple, start=0):
         super().__init__()
@@ -28,8 +29,11 @@ class custom_graph_widget(pg.PlotWidget):
             print(self.current_frame)
             self.values[index][1].append(self.current_frame[index])
 
+            # TODO. Fix for string / json parsing. Currently expects numbers and therefore breaks
             self.values[index][2].setData(self.values[index][0][-self.graphed_values_num:], self.values[index][1][-self.graphed_values_num:])
 
     def show_history(self):
         for index in self.indexes:
+            
+            # TODO. Fix for string / json parsing. Currently expects numbers and therefore breaks
             self.values[index][2].setData(self.values[index][0], self.values[index][1])

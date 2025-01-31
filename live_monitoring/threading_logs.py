@@ -57,6 +57,7 @@ class telem_frame_handler(QtCore.QRunnable):
                 if(message == 'STOP'):
                     break
         
+                #TODO. FIX FOR JSON DATA. Currently expecting binary data and therefore crashing.
                 for x in message:
                     file.write(str(x) + ",")
                 file.write("{:.2f}".format(time() - self.start_time))
