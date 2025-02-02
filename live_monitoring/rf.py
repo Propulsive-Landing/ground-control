@@ -75,7 +75,7 @@ class RF():
                 self._log_queue.put(data["payload"])
             elif(data["data_type"] == "telem"):
                 self._telem_frame_queue.put(data["payload"])
-                self._current_telem_frame[:] = data["payload"]
+                self._current_telem_frame.update(data["payload"])
                 self.handled_most_recent.value = 0
         except Exception as e:
             print(e)
