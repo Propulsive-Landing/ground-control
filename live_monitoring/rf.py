@@ -74,6 +74,7 @@ class RF():
             if(data["data_type"] == "string"):
                 self._log_queue.put(data["payload"])
             elif(data["data_type"] == "telem"):
+                print("PayLoad = ", data["payload"])
                 self._telem_frame_queue.put(data["payload"])
                 self._current_telem_frame.update(data["payload"])
                 self.handled_most_recent.value = 0
