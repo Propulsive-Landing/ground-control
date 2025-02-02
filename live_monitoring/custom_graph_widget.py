@@ -3,37 +3,33 @@ from time import time
 
 #TODO. FIX FOR JSON DATA. Currently expecting binary data and therefore crashing.
 class custom_graph_widget(pg.PlotWidget):
-    def __init__(self, indexes_in_struct: tuple, names: tuple, start=0):
+    def __init__(self, names: tuple, start=0):
         super().__init__()
-        self.indexes = indexes_in_struct
         self.names = names
 
         self.graphed_values_num = 40
 
         self.start_time = start
 
-        self.values = {}
+        self.graph_lines = {} # name -> ([array of time], [array of data], graphitem)
 
     def setup_connection(self, current_frame):
         self.plotItem.addLegend()
         
         self.current_frame = current_frame
-        for count, index in enumerate(self.indexes):
-            self.values[index] = ([], [], self.plot([], [], pen=(count, len(self.indexes)), name=self.names[count]))
+        for index, name in enumerate(self.names):
+            self.graph_lines[name] = ([], [], self.plot([], [], pen=(index, len(self.names)), name=name))
         
         
     def update_lines(self):
-        for index in self.indexes:
-            self.values[index][0].append(time()-self.start_time)
+        for name, graph_line in self.graph_lines.items():
+            self.graph_lines[name][0].append(time()-self.start_time)
             print("CurrentFrame")
             print(self.current_frame)
-            self.values[index][1].append(self.current_frame[index])
+            self.graph_lines[name][1].append(self.current_frame[name])
 
-            # TODO. Fix for string / json parsing. Currently expects numbers and therefore breaks
-            self.values[index][2].setData(self.values[index][0][-self.graphed_values_num:], self.values[index][1][-self.graphed_values_num:])
+            self.graph_lines[name][2].setData(self.graph_lines[name][0][-self.graphed_values_num:], self.graph_lines[name][1][-self.graphed_values_num:])
 
     def show_history(self):
-        for index in self.indexes:
-            
-            # TODO. Fix for string / json parsing. Currently expects numbers and therefore breaks
-            self.values[index][2].setData(self.values[index][0], self.values[index][1])
+        for name, graph_line in self.graph_lines.items():
+            self.graph_lines[name][2].setData(self.graph_lines[name][0], self.graph_lines[name][1])

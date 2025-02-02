@@ -107,8 +107,8 @@ class state_management_widget(QtWidgets.QWidget):
         self.looping_for_data.value = 1
         self.rf.start_listen_loop(self.looping_for_data)
 
-        logging = log_handler(self.log_path, self._data['log_queue'], self.start_time)
-        telem = telem_frame_handler(self.data_path, self._data['frame_queue'], self.start_time)
+        logging = log_handler(self.log_path, self.log_queue, self.start_time)
+        telem = telem_frame_handler(self.data_path, self.frame_queue, self.start_time)
 
         logging.signals.log_signal.connect(self.output)
         telem.signals.telem_signal.connect(self.output)
@@ -121,8 +121,8 @@ class state_management_widget(QtWidgets.QWidget):
 
     def stop_listening(self):
         try:
-            self._data['log_queue'].put('STOP')
-            self._data['frame_queue'].put('STOP')
+            self.log_queue.put('STOP')
+            self.frame_queue.put('STOP')
             self.looping_for_data.value = 0
 
             self.stop_listening_button.setEnabled(False)
@@ -157,24 +157,23 @@ class state_management_widget(QtWidgets.QWidget):
 
     #does not connect the port, just passses the info to the RF class so it can be used later
     def initialize_rf(self, port : str, baud : int):
-        self._data = {
-            'current_frame': self.manager.list(), #Most recent data frame received
-            'log_queue' : self.manager.Queue(), #queue of all logs
-            'frame_queue': self.manager.Queue() #queue of all data frames received
-        }
+        self.current_frame = self.manager.dict() #Most recent data frame received
+        self.log_queue = self.manager.Queue(), #queue of all logs
+        self.frame_queue = self.manager.Queue() #queue of all data frames received
+
         self.graphed_most_recent_value = Value('B')
         self.graphed_most_recent_value.value = 1
 
-        self.command_panel.current = self._data['current_frame']
+        self.command_panel.current = self.current_frame
 
         self.looping_for_data = Value('i', 1) #Controls whether the listenig process is running.
 
-        self.rf = RF(port, baud, self._data['current_frame'], self._data['frame_queue'], self._data['log_queue'], handled_most_recent=self.graphed_most_recent_value)
+        self.rf = RF(port, baud, self.current_frame, self.frame_queue, self.log_queue, handled_most_recent=self.graphed_most_recent_value)
 
         for graph in self.graphs:
-            graph.setup_connection(self._data['current_frame'])
+            graph.setup_connection(self.current_frame)
         for number in self.numerical_displays:
-            number.setup_connection(self._data['current_frame'])
+            number.setup_connection(self.current_frame)
 
         
             
