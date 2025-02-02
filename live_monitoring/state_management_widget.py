@@ -158,7 +158,7 @@ class state_management_widget(QtWidgets.QWidget):
     #does not connect the port, just passses the info to the RF class so it can be used later
     def initialize_rf(self, port : str, baud : int):
         self.current_frame = self.manager.dict() #Most recent data frame received
-        self.log_queue = self.manager.Queue(), #queue of all logs
+        self.log_queue = self.manager.Queue() #queue of all logs
         self.frame_queue = self.manager.Queue() #queue of all data frames received
 
         self.graphed_most_recent_value = Value('B')

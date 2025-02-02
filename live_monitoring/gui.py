@@ -66,7 +66,7 @@ class GroundControlWindow(QtWidgets.QWidget):
         self.graphs = []
 
         self.graphs.append(custom_graph_widget(names=('euler_x', 'euler_y', 'euler_z'), start=self.program_start_time))
-        self.graphs.append(custom_graph_widget(names=('input_x, input_y, dt'), start=self.program_start_time))
+        self.graphs.append(custom_graph_widget(names=('input_x', 'input_y', 'dt'), start=self.program_start_time))
         self.graphs.append(custom_graph_widget(names=('velocity_x', 'velocity_y', 'velocity_z'), start=self.program_start_time))
 
         self.layout.addWidget(self.graphs[0], 0, 0)
