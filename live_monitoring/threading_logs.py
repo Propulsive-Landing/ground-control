@@ -8,9 +8,6 @@ class log_signals(QtCore.QObject):
 class telem_signals(QtCore.QObject):
     telem_signal = QtCore.Signal(str)
 
-
-
-
 class log_handler(QtCore.QRunnable):
     def __init__(self, path : str, log_queue: Queue, start: float):
         super().__init__()
